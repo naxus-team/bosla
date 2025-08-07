@@ -1,9 +1,19 @@
+import { AuthLogin as Login } from "./auth/login";
+
 import Home from "./components/Home";
 import About from "./components/About";
 
+// Errors are handled all in one place
+// so we can use a single component for all 404s
+import E404 from "./components/404";
+
+
 const routes = [
+  { path: "/oauth/login", element: <Login /> },
+
   { path: "/", element: <Home /> },
   { path: "/about", element: <About /> },
+  { path: "*", element: <E404 /> },
 ];
 
 export default routes;
