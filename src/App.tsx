@@ -1,17 +1,10 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Home from './components/Home'
-import About from './components/About'
-import './App.css';
-
+import React from "react";
+import { useRoutes } from "react-router-dom";
+import routes from "./route";
 
 function App() {
-  return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/about" element={<About />} />
-    </Routes>
-  );
+  const routing = useRoutes(routes);
+  return routing;
 }
 
 export default App;
