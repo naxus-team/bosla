@@ -1,4 +1,3 @@
-// src/lang/index.ts
 import { en } from "./en";
 import { ar } from "./ar";
 

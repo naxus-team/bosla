@@ -9,7 +9,7 @@ import E404 from "./components/404";
 
 
 const routes = [
-  { path: "/oauth/login", element: <Login /> },
+  { path: "/login", element: <Login /> },
 
   { path: "/", element: <Home /> },
   { path: "/about", element: <About /> },
