@@ -5,7 +5,7 @@ function Home() {
         <span className="text-[white] ">The Header</span>
         <nav className="flex items-center gap-4">
           <a href="/" className="text-[white]">Home</a>
-          <a href="/about" className="text-[white]">About</a>
+          <a href="/oauth/login" className="text-[white]">Login</a>
         </nav>
       </div>
       <div className="flex items-center justify-center h-[calc(100vh-60px)]">
