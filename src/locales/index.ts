@@ -15,6 +15,10 @@ export function setLang(lang: LangType) {
   localStorage.setItem("lang", lang);
 }
 
+export function getLang(): LangType {
+  return currentLang;
+}
+
 export function t(path: string): string {
   const keys = path.split(".");
   let result: any = languages[currentLang];

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -14,6 +15,12 @@ const loginSchema = z.object({
 type LoginForm = z.infer<typeof loginSchema>;
 
 export function AuthLogin() {
+  useEffect(() => {
+    document.title = `${t("app.name")} | ${t("common.langs.login")}`;
+  }, []);
+  // useEffect(() => {
+  //   setLang("ar");
+  // }, []);
   const cleanMapStyle = [
     {
       featureType: "all",
@@ -60,19 +67,105 @@ export function AuthLogin() {
   };
 
   return (
-    <div dir="rtl" className="flex items-center min-h-screen font-noto font-noto-arabic">
-      <div className="flex items-center justify-center w-[calc(50%)]">
+    <div className="flex items-center min-h-screen font-noto font-noto-arabic">
+      <div className="flex items-center justify-center w-[calc(100%)]">
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="w-full max-w-[426px]"
         >
           <div className="flex items-center justify-center mb-6">
             <svg width="52" height="52" viewBox="0 0 52 52">
-              <path fill="black" d="M16,26.05c3.89,3.89,9.06,6.03,14.57,6.03c1.84,0,3.64-0.24,5.37-0.7c4.06-1.09,5.39-6.2,2.42-9.18l-20.6-20.6
-		c-2.14-2.14-5.62-2.14-7.76,0L1.61,9.99c-3.01,3.01-1.57,8.09,2.54,9.2C8.49,20.36,12.6,22.65,16,26.05z"/>
-              <path className="fill-black/25" d="M22.27,37.02c-2.24-2.24-5.21-3.47-8.37-3.47c-1.06,0-2.09,0.14-3.08,0.4c-2.34,0.63-3.1,3.56-1.39,5.27
-		l11.84,11.84c1.23,1.23,3.23,1.23,4.46,0l4.82-4.82c1.73-1.73,0.9-4.65-1.46-5.29C26.59,40.29,24.23,38.98,22.27,37.02z"/>
+
+              <g>
+                <g>
+                  <defs>
+                    <path
+                      id="SVGID_1_"
+                      d="M34,0h-16C8,0,0,8,0,18v16c0,10,8,18,18,18h16c10,0,18-8,18-18V18C52,8,44,0,34,0z"
+                    />
+                  </defs>
+                  <clipPath id="SVGID_2_">
+                    <use xlinkHref="#SVGID_1_" style={{ overflow: "visible" }} />
+                  </clipPath>
+                  <g className="st0">
+                    <g>
+                      <defs>
+                        <rect
+                          id="SVGID_3_"
+                          width="52"
+                          height="52"
+                          rx="20"
+                          ry="20"
+                        />
+                      </defs>
+                      <clipPath id="SVGID_4_">
+                        <use xlinkHref="#SVGID_3_" style={{ overflow: "visible" }} />
+                      </clipPath>
+                      <g clipPath="url(#SVGID_4_)">
+
+                        <image style={{ overflow: "visible" }} width="130" height="131" xlinkHref="data:image/jpeg;base64,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
+eF//2Q==" transform="matrix(0.48 0 0 0.48 -5.2774 -5.4396)">
+                        </image>
+                      </g>
+                    </g>
+                  </g>
+                </g>
+              </g>
+              <path className="fill-white" d="M29.43,3.71h-6.86c-10.41,0-18.86,8.44-18.86,18.86v6.86c0,10.41,8.44,18.86,18.86,18.86h6.86
+	c10.41,0,18.86-8.44,18.86-18.86v-6.86C48.29,12.16,39.84,3.71,29.43,3.71z"/>
+              <g className="fill-black">
+                <path d="M37.4,21.9v-4.67c0-1.45-1.18-2.63-2.62-2.63H30.1c-2.25,0-4.26,1.02-5.6,2.63c-0.94-1.54-2.62-2.58-4.56-2.58
+	h-2.72c-1.45,0-2.62,1.18-2.62,2.62v2.72c0,1.93,1.04,3.61,2.58,4.55c-1.58,1.34-2.58,3.33-2.58,5.56v4.67
+	c0,1.45,1.18,2.62,2.62,2.62h4.67c2.23,0,4.22-1.01,5.56-2.58c0.94,1.54,2.62,2.58,4.55,2.58h2.72c1.45,0,2.62-1.18,2.62-2.62v-2.72
+	c0-1.93-1.04-3.62-2.59-4.56C36.37,26.15,37.4,24.14,37.4,21.9z M30.1,17.52h4.37v4.38c0,2.41-1.96,4.38-4.37,4.38
+	c-1.07,0-2.04-0.4-2.8-1.04c-0.17-0.18-0.34-0.36-0.53-0.53c-0.64-0.76-1.04-1.73-1.04-2.8C25.73,19.48,27.69,17.52,30.1,17.52z
+	 M17.52,17.56h2.43c1.34,0,2.43,1.09,2.43,2.43c0,1.34-1.09,2.43-2.43,2.43s-2.43-1.09-2.43-2.43V17.56z M21.9,34.48h-4.38V30.1
+	c0-2.41,1.96-4.38,4.38-4.38c1.07,0,2.04,0.4,2.8,1.04c0.17,0.18,0.34,0.36,0.53,0.53c0.64,0.76,1.04,1.73,1.04,2.8
+	C26.27,32.52,24.31,34.48,21.9,34.48z M34.44,34.48h-2.43c-1.34,0-2.43-1.09-2.43-2.43c0-1.34,1.09-2.43,2.43-2.43
+	c1.34,0,2.43,1.09,2.43,2.43V34.48z"/>
+              </g>
             </svg>
+
+
+
           </div>
 
           <h2 className="text-3xl font-bold my-10 text-center">{t("login.welcome_back")}</h2>
@@ -153,36 +246,9 @@ export function AuthLogin() {
             </Link>
             <span>.</span>
           </div>
-          <div className="flex items-center justify-center mt-6">
-            <button className="flex items-center justify-center px-4 rounded-full min-h-[42px] hover:bg-[rgba(0,0,0,0.04)] transition duration-100 space-x-2 rtl:space-x-reverse">
-              <img src="https://s3-iconly.sfo3.digitaloceanspaces.com/png-icons/translate%20language-134-1692683740.png" alt="Arabic" className="w-6 h-6" />
-              <span className="text-sm text-black font-semibold">{t("common.langs.arabic")}</span>
-            </button>
-          </div>
         </form>
       </div>
-      <div className=" h-screen w-[100vh] flex items-center justify-center p-2 bg-white">
-        <div className="relative w-full h-full bg-[rgba(0,0,0,.04)] rounded-xl overflow-hidden">
-          <div className="absolute inset-0 flex items-center justify-center">
-            <LoadScript googleMapsApiKey="AIzaSyCuTilAfnGfkZtIx0T3qf-eOmWZ_N2LpoY">
-              <GoogleMap
-                mapContainerStyle={containerStyle}
-                center={center}
-                zoom={13}
-                options={{
-                  styles: cleanMapStyle, // هنا تضيف التنسيق
-                  disableDefaultUI: true, // يخفي أزرار التكبير والبحث وغيره
-                  draggable: false,       // يمنع تحريك الخريطة
-                  scrollwheel: false,     // يمنع الزوم من الماوس
-                }}
 
-              >
-                {/* ممكن تضيف ماركر هنا لو حبيت */}
-              </GoogleMap>
-            </LoadScript>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }

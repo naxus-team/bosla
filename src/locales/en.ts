@@ -36,6 +36,8 @@ export const en = {
         to: "to",
         settings: "Settings",
         langs: {
+            login: "Login",
+            join: "Join",
             arabic: "Arabic",
             english: "English",
             french: "French",

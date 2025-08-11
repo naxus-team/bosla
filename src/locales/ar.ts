@@ -36,6 +36,8 @@ export const ar = {
         to: "إلى",
         settings: "الإعدادات",
         langs: {
+            login: "تسجيل الدخول",
+            join: "انضم",
             arabic: "العربية",
             english: "الإنجليزية",
             french: "الفرنسية",
