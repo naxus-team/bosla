@@ -44,5 +44,9 @@ export const ar = {
             spanish: "الإسبانية",
         },
         lang_switch: "تغيير اللغة",
-    }
+    },
+    where_to: {
+        placeholder: "إلى أين؟..",
+        search: "بحث",
+    },
 };

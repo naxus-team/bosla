@@ -7,6 +7,8 @@ module.exports = {
             fontFamily: {
                 noto: ['"Noto Sans"', 'sans-serif'],
                 'noto-arabic': ['"Noto Sans Arabic"', 'sans-serif'],
+                cairo: ['Cairo', 'sans-serif'],
+
 
             },
         },
