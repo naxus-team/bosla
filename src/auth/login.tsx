@@ -67,7 +67,7 @@ export function AuthLogin() {
   };
 
   return (
-    <div className="flex items-center min-h-screen font-noto font-noto-arabic">
+    <div className="flex items-center min-h-screen font-noto font-ibm">
       <div className="flex items-center justify-center w-[calc(100%)]">
         <form
           onSubmit={handleSubmit(onSubmit)}

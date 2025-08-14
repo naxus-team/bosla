@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
-import { getLang } from "./locales";
+import { getLang, setLang } from "./locales";
 import { getTheme, setTheme, initTheme, ThemeType } from "./theme";
 
 
@@ -14,6 +14,7 @@ function App() {
   const [theme, setThemeState] = useState<ThemeType>(getTheme());
   useEffect(() => {
     document.documentElement.dir = getLang() === "ar" ? "rtl" : "ltr";
+    setLang("ar");
     initTheme();
     setThemeState(getTheme());
     const handleThemeChange = () => {
