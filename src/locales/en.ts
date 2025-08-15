@@ -1,6 +1,6 @@
 export const en = {
     app: {
-        name: "Bosla",
+        name: "Bosla Drive",
         description: "Bosla is an open-source application aimed at providing a seamless and secure login experience for users.",
         title: "Bosla - Login",
         subtitle: "Login to your account",
@@ -34,6 +34,8 @@ export const en = {
         and: "and",
         or: "or",
         to: "to",
+        from: "from",
+        search: "Search",
         settings: "Settings",
         langs: {
             login: "Login",

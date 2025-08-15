@@ -4,7 +4,7 @@
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: #4b5563 #f1f1f1;
+  scrollbar-color: rgba(77, 77, 77,1) transparent;
 }
 
 @font-face {
