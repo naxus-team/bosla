@@ -1,6 +1,9 @@
 export const en = {
     app: {
-        name: "Bosla Drive",
+        name: "Bosla",
+        "types": {
+            "drive": "Drive"
+        },
         description: "Bosla is an open-source application aimed at providing a seamless and secure login experience for users.",
         title: "Bosla - Login",
         subtitle: "Login to your account",

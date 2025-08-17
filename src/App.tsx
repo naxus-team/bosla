@@ -19,7 +19,7 @@ function App() {
     document.title = `${t("app.name")}`;
     document.documentElement.dir = getLang() === "ar" ? "rtl" : "ltr";
     setLang("ar");
-    setTheme("light");
+    setTheme("dark");
     initTheme();
     setThemeState(getTheme());
     const handleThemeChange = () => {

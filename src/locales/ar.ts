@@ -1,6 +1,9 @@
 export const ar = {
     app: {
-        name: "بوصله درايف",
+        name: "بوصله",
+        "types": {
+            "drive": "Drive"
+        },
         description: "بوصله هو تطبيق مفتوح المصدر يهدف إلى توفير تجربة تسجيل دخول سلسة وآمنة للمستخدمين.",
         title: "بوصله - تسجيل الدخول",
         subtitle: "تسجيل الدخول إلى حسابك",
@@ -44,7 +47,7 @@ export const ar = {
             english: "الإنجليزية",
             french: "الفرنسية",
             spanish: "الإسبانية",
-            find_driver: "البحث عن سائق",
+            find_driver: "بحث عن سائق",
             book_ride: "حجز رحلة",
             show_fare: "عرض الأجرة",
         },

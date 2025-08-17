@@ -27,21 +27,22 @@ module.exports = {
 
             },
             colors: {
-                primary: "#0A68FF", // اللون الأساسي
-                primary_light: "#4D8CFF",   // درجة أفتح
-                primary_dark: "#084FCC",    // درجة أغمق
-                primary_soft: "#E6F0FF",     // خلفية أو لون ثانوي فاتح
-                gray: "#E5E5E5", // لون رمادي فاتح
-                gray_dark: "#4D4D4D", // لون رمادي داكن
-                secondary: "#FF5E3A", // اللون الثانوي
-                secondary_light: "#FF9A4D", // درجة أفتح    
-                secondary_dark: "#CC5A08",  // درجة أغمق
-                secondary_soft: "#FFF0E6",  // خلفية أو لون ثانوي
-                background: "#F7F2DD", // لون الخلفية
-                background_dark: "#1A1A1A", // لون الخلفية الداكن
-                text_primary: "#333333", // لون النص الأساسي
-
+                primary: "#0A68FF",       // اللون الأساسي
+                primary_light: "#4D8CFF", // درجة أفتح
+                primary_dark: "#084FCC",  // درجة أغمق
+                primary_soft: "#E6F4FF",  // لون خلفية أو لون ثانوي فاتح للأزرق
+                gray: "#E0E0E0",          // رمادي فاتح نظيف
+                gray_dark: "#4D4D4D",     // رمادي للنصوص
+                secondary: "#FF5E3A",     // اللون الثانوي زي ما هو
+                secondary_light: "#FF9A4D", // درجة أفتح للثانوي
+                secondary_dark: "#CC5A08",  // درجة أغمق للثانوي
+                secondary_soft: "#FFF5F0",  // خلفية أو لون ثانوي فاتح
+                background: "#F7F9FC",     // خلفية رايقة ونظيفة
+                background_dark: "#1A1A1A", // خلفية داكنة للـ Dark Mode
+                text_primary: "#222222",   // لون النص الأساسي، ناعم على الخلفية الفاتحة
+                text_secondary: "#666666", // نص ثانوي للـ labels أو وصف صغير
             },
+
             fontFamily: {
                 noto: ['"Noto Sans"', 'sans-serif'],
                 'noto-arabic': ['"Noto Sans Arabic"', 'sans-serif'],
