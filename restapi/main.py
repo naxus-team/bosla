@@ -18,4 +18,4 @@ def post_hello(data: HelloRequest):
     return {"message": f"Hello {data.name}"}
 
 
-# PUSH endpoint
+# PUSH endpoint server
