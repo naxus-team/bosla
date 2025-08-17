@@ -16,3 +16,6 @@ def get_hello():
 @app.post("/hello")
 def post_hello(data: HelloRequest):
     return {"message": f"Hello {data.name}"}
+
+
+# PUSH endpoint
