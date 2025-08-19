@@ -4,13 +4,28 @@
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(77, 77, 77,1) transparent;
+  scrollbar-color: rgba(77, 77, 77, 1) transparent;
+}
+
+::selection {
+  background: rgba(26, 26, 26, .1);
+  color: rgba(26, 26, 26, 1);
 }
 
 @font-face {
   font-family: 'Cairo';
   src: url('./fonts/Cairo-VariableFont_slnt,wght.ttf') format('truetype');
-  font-weight: 100 900; /* كل الأوزان متاحة */
+  font-weight: 100 900;
+  /* كل الأوزان متاحة */
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Changa';
+  src: url('./fonts/Changa-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  /* كل الأوزان متاحة */
   font-style: normal;
   font-display: swap;
 }

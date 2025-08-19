@@ -1,14 +1,19 @@
-import { en } from "./en";
-import { ar } from "./ar";
+import { en_us } from "./en_us";
+import { ar_gl } from "./ar_gl";
+import { ar_gcc } from "./ar_gcc";
+import { ar_eg } from "./ar_eg";
+
 
 const languages = {
-  en,
-  ar,
+  en_us,
+  ar_gl,
+  ar_gcc,
+  ar_eg,
 };
 
 type LangType = keyof typeof languages;
 
-let currentLang: LangType = localStorage.getItem("lang") as LangType || "en";
+let currentLang: LangType = localStorage.getItem("lang") as LangType || "en_us";
 
 export function setLang(lang: LangType) {
   currentLang = lang;

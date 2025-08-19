@@ -1,4 +1,4 @@
-export const en = {
+export const en_us = {
     app: {
         name: "Bosla",
         "types": {
@@ -30,10 +30,15 @@ export const en = {
             github: 'Continue with GitHub',
             default: 'Continue'
         },
+        "tips": {
+            "dhaa": "ليس لديك حساب؟",
+            "ahaa": "ليس لديك حساب؟"
+        },
         password: "Password",
         submit: "Login",
     },
     common: {
+        "get_start": "GET STARTED",
         and: "and",
         or: "or",
         to: "to",

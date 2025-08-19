@@ -27,26 +27,33 @@ module.exports = {
 
             },
             colors: {
-                primary: "#0A68FF",       // اللون الأساسي
-                primary_light: "#4D8CFF", // درجة أفتح
-                primary_dark: "#084FCC",  // درجة أغمق
-                primary_soft: "#E6F4FF",  // لون خلفية أو لون ثانوي فاتح للأزرق
-                gray: "#E0E0E0",          // رمادي فاتح نظيف
-                gray_dark: "#4D4D4D",     // رمادي للنصوص
-                secondary: "#FF5E3A",     // اللون الثانوي زي ما هو
-                secondary_light: "#FF9A4D", // درجة أفتح للثانوي
-                secondary_dark: "#CC5A08",  // درجة أغمق للثانوي
-                secondary_soft: "#FFF5F0",  // خلفية أو لون ثانوي فاتح
-                background: "#F7F9FC",     // خلفية رايقة ونظيفة
-                background_dark: "#1A1A1A", // خلفية داكنة للـ Dark Mode
-                text_primary: "#222222",   // لون النص الأساسي، ناعم على الخلفية الفاتحة
-                text_secondary: "#666666", // نص ثانوي للـ labels أو وصف صغير
+                primary: "rgba(238, 15, 56)",     // اللون الأساسي (أحمر مشبع)
+                primary_5: "rgba(238, 15, 56, .5)",     // اللون الأساسي (أحمر مشبع)
+
+                primary_light: "#FF4D6D",         // أفتح بلمسة وردية
+                primary_dark: "#B20028",          // أغمق (أحمر نبيتي غامق)
+                primary_soft: "#FFE6EB",          // خلفية فاتحة ناعمة بدرجة وردية
+
+                gray: "#EEEEEE",                  // رمادي فاتح نظيف
+                gray_dark: "#4D4D4D",             // رمادي للنصوص
+
+                secondary: "#FF9A76",             // برتقالي دافئ (مكمل للأحمر)
+                secondary_light: "#F75557",       // أفتح للثانوي
+                secondary_dark: "#CC5E00",        // أغمق للثانوي
+                secondary_soft: "#FFF4E6",        // خلفية فاتحة دافئة
+
+                background: "rgba(255, 255, 255, 1)",            // أبيض شبه صافي للخلفيات
+                background_dark: "#1A1A1A",       // خلفية داكنة للـ Dark Mode
+
+                text_primary: "#222222",          // أساسي للنص
+                text_secondary: "#666666",        // ثانوي
             },
 
             fontFamily: {
                 noto: ['"Noto Sans"', 'sans-serif'],
-                'noto-arabic': ['"Noto Sans Arabic"', 'sans-serif'],
+                'noto-arabic': ['"Noto Sans Arabic"', 'Noto Sans'],
                 cairo: ['Cairo', 'sans-serif'],
+                changa: ['Changa', 'sans-serif'],
             },
             textShadow: {
                 sm: "1px 1px 2px rgba(0,0,0,0.25)",
