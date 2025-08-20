@@ -13,7 +13,9 @@ import * as Icon from 'react-feather';
 
 
 // Components
-import Menu from "../components/Menu";
+import Navigation from "../components/Navigation";
+import BottomSheet from "../components/BottomSheet";
+
 
 
 const containerStyle = {
@@ -77,6 +79,10 @@ function Application() {
 
   const [mapStyle, setMapStyle] = useState<google.maps.MapTypeStyle[]>(mapOptions);
   const [open, setOpen] = useState(false);
+
+  const [bottomSheetOpen, setBottomSheetOpen] = useState(false);
+
+
   const [openControl, setOpenControl] = useState(true);
 
   const [showFare, setShowFare] = useState([]);
@@ -89,7 +95,10 @@ function Application() {
         <div className="relative w-[393px] h-screen bg-background_dark overflow-hidden shadow-xl select-none">
           {/* Mobile Platform */}
 
-          <Menu open={open} onClose={() => setOpen(false)} />
+          <Navigation open={open} onClose={() => setOpen(false)} />
+          <BottomSheet open={bottomSheetOpen} onClose={() => setBottomSheetOpen(false)} />
+
+
           <motion.div
             initial={false}
             animate={!open ? "open" : "closed"}
@@ -124,15 +133,18 @@ function Application() {
                       <path className="fill-background_dark" d="M42.54,20.6l-0.73,0.72c-1.95,1.94-5.11,1.94-7.05,0l-4.25-4.25l4.25-4.25c1.95-1.94,5.11-1.94,7.05,0
     l0.73,0.73C44.49,15.49,44.49,18.66,42.54,20.6z"/>
                     </svg>
-                    <button className="relative min-w-[38px] h-[38px] flex items-center justify-center rounded-full active:scale-95 transition duration-100 ease-in-out">
-                      <Icon.Search className="w-[24px] h-[24px] dark:stroke-background dark:stroke-background stroke-[2px] dark:text-background" />
-                    </button>
+                  </div>
+                  <div className="flex items-center px-12 h-[32px] bg-[rgba(255,255,255,.04)] rounded-full space-x-2 rtl:space-x-reverse dark:shadow-[0_0_0_1px_rgba(59,59,60,1)]">
+                    <Icon.Search className="w-[18px] h-[18px] dark:stroke-background dark:stroke-background/60 stroke-[2px] dark:text-background" />
+                    <span className="text-sm text-background/60 font-normal">
+                      {t("common.search")}
+                    </span>
                   </div>
                   <div className="flex items-center">
                     <button onClick={() => setOpen(!open)} className="relative min-w-[38px] h-[38px] flex items-center justify-center rounded-full cursor-default active:scale-95 transition duration-100 ease-in-out">
                       {/* <Icon.HelpCircle className="w-[24px] h-[24px] stroke-background_dark/70 dark:stroke-background/70 stroke-[2px] dark:text-background" /> */}
                       <div className="relative w-[38px] h-[38px] rounded-full overflow-hidden">
-                        <img src="./prof1.png" />
+                        <img src="./mo.jpg" />
                       </div>
                     </button>
                   </div>
@@ -140,7 +152,7 @@ function Application() {
 
                 <motion.div
                   initial={false}
-                  animate={!open && openControl ? "open" : "closed"}
+                  animate={openControl ? "open" : "closed"}
                   variants={{
                     open: { height: "116px", pointerEvents: "auto" },
                     closed: { height: 0, paddingTop: 0, paddingBottom: 0, margin: 0, pointerEvents: "none" },
@@ -158,7 +170,7 @@ function Application() {
                             </div>
                             <div className="h-[16px] w-[2px] rounded-full bg-gray dark:bg-[rgba(77,77,77,1)]"></div>
                           </div>
-                          <span className="flex items-center text-md text-background_dark/60 dark:text-background/60 font-normal">الزاوية الحمراء &nbsp; <span className="font-semibold">(القاهرة)</span></span>
+                          <span className="flex items-center text-md text-background_dark/60 dark:text-background/60 font-normal">الزاوية الحمراء &nbsp; <span className="text-background">(القاهرة)</span></span>
                         </div>
                         <div className="flex items-center px-1 space-x-2 rtl:space-x-reverse">
                           <button className="relative min-w-[32px] h-[32px] flex items-center justify-center dark:shadow-[0_0_0_1px_rgba(59,59,60,1)] active:dark:shadow-[0_0_0_2px_rgba(238,15,56,1)] active:scale-95 transition all duration-100 active:duration-0 rounded-full active:scale-95 active:bg-background transition duration-100 ease-in-out ">
@@ -192,12 +204,12 @@ function Application() {
                               </div>
                               <div className="h-[16px] w-[2px] rounded-full bg-[rgba(193,196,197,1)] dark:bg-[rgba(77,77,77,1)]"></div>
                             </div>
-                            <span className="flex items-center text-md font-semibold text-background_dark dark:text-background rounded-xl">مدينة السلام</span>
+                            <span className="flex items-center text-md font-normal text-background_dark dark:text-background rounded-xl">مدينة السلام &nbsp; <span className="text-background/60">(القاهرة)</span></span>
                           </div>
                         </div>
                         <div className="flex items-center space-x-2 rtl:space-x-reverse h-[52px] px-2 rounded-full ">
 
-                          <button className="relative min-w-[38px] h-[38px] flex items-center justify-center bg-primary rounded-full active:scale-95 transition duration-100 ease-in-out hover:bg-primary/80">
+                          <button className="relative min-w-[76px] h-[38px] flex items-center justify-center bg-primary rounded-full active:scale-95 transition duration-100 ease-in-out hover:bg-primary/80">
                             <Icon.MapPin strokeLinecap="round" className="w-[18px] h-[18px] stroke-background stroke-[2px] dark:text-background" />
                           </button>
                         </div>
@@ -228,7 +240,7 @@ function Application() {
 
             <motion.div
               initial={false}
-              animate={!open && openControl ? "open" : "closed"}
+              animate={openControl && !bottomSheetOpen ? "open" : "closed"}
               variants={{
                 open: { y: 0, pointerEvents: "auto" },
                 closed: { bottom: "0" },
@@ -246,7 +258,7 @@ function Application() {
 
             <motion.div
               initial={false}
-              animate={!open && openControl ? "open" : "closed"}
+              animate={openControl && !bottomSheetOpen ? "open" : "closed"}
               variants={{
                 open: { y: 0, pointerEvents: "auto" },
                 closed: { y: "100%", pointerEvents: "none" },
@@ -306,16 +318,10 @@ function Application() {
                   </div>
                 </div>
 
-                <div className="relative flex items-center w-full h-[52px] dark:shadow-[0_0_0_1px_rgba(59,59,60,1)] active:dark:shadow-[0_0_0_2px_rgba(238,15,56,1)] active: rounded-full w-full active:scale-[.98] transition duration-100 ease-in-out">
-                  <div className="relative flex items-center space-x-2 rtl:space-x-reverse  px-3 ">
-                    <span className="flex items-center justify-center text-background_dark dark:text-background font-bold text-base min-w-[38px]">
-                      EGP
-                    </span>
-                    <div className="h-[16px] w-[2px] rounded-full bg-[rgba(193,196,197,1)] dark:bg-[rgba(77,77,77,1)]"></div>
-                  </div>
-                  <div className="flex items-center space-x-2 rtl:space-x-reverse h-[52px] px-2 rounded-full">
-                    <button className="relative min-w-[38px] h-[38px] flex items-center justify-center rounded-full ">
-                      <div className="relative flex items-center justify-center w-[calc(361px-124px)]">
+                <div onClick={() => setBottomSheetOpen(!bottomSheetOpen)} className="relative flex items-center justify-center w-full h-[52px] dark:shadow-[0_0_0_1px_rgba(59,59,60,1)] active:dark:shadow-[0_0_0_2px_rgba(238,15,56,1)] active: rounded-full w-full active:scale-[.98] transition duration-100 ease-in-out">
+                  <div className="flex items-center h-[52px] px-2 rounded-full">
+                    <button className="relative h-[38px] flex items-center rounded-full space-x-3 rtl:space-x-reverse">
+                      <div className="flex items-center">
                         {!showFare ? (
                           <span className="flex items-center text-lg font-semibold h-[28px] text-background_dark dark:text-background rounded-3xl">
                             <span>50</span>

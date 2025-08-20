@@ -18,29 +18,24 @@ export default function Menu({ open, onClose }: MenuProps) {
                     animate={{ x: 0 }}     // أثناء الظهور
                     exit={{ x: "-100%" }}      // عند الاختفاء
                     transition={{ duration: 0.2, ease: "easeInOut" }} // سرعة ونعومة
-                    className="z-[999999] absolute top-0 left-0 w-full h-screen bg-background_dark shadow-lg p-4"
+                    className="z-[999999] absolute top-0 left-0 w-full h-screen bg-background_dark p-4"
                 >
                     <div className="flex items-center justify-between px-1">
                         <button onClick={onClose} className="relative min-w-[38px] h-[38px] flex items-center justify-center rounded-full active:scale-95 transition duration-100 ease-in-out">
                             <Icon.X className="w-[24px] h-[24px] dark:stroke-background dark:stroke-background stroke-[2px] dark:text-background" />
                         </button>
-                        <button onClick={onClose} className="relative min-w-[38px] h-[38px] flex items-center justify-center rounded-full active:scale-95 transition duration-100 ease-in-out">
-                            <Icon.MoreHorizontal className="w-[24px] h-[24px] dark:stroke-background dark:stroke-background stroke-[2px] dark:text-background" />
-                        </button>
                     </div>
                     <div className="flex items-center justify-between p-4 dark:shadow-[0_0_0_1px_rgba(59,59,60,1)] rounded-3xl mt-2">
                         <div className="flex items-center space-x-3 rtl:space-x-reverse">
-                            <img src="./prof1.png" className=" w-[52px] h-[52px] rounded-full" />
+                            <img src="./mo.jpg" className=" w-[52px] h-[52px] rounded-full" />
                             <div className="flex flex-col justify-between space-y-1">
-                                <span className="text-sm text-background font-semibold">عبد الرحمن أحمد</span>
-                                <span className="text-sm text-background/60 font-normal">201001724808+</span>
+                                <span className="text-sm text-background font-semibold">Mohamed Reda</span>
+                                <span dir="ltr" className="text-sm text-background/60 font-normal">+20 11 41997099</span>
                             </div>
                         </div>
                         <div className="flex items-center">
-                            <button
-                                className="flex items-center px-4 h-[32px] rounded-xl dark:bg-primary"
-                            >
-                                <span className="text-sm text-background font-semibold">ترقية الحساب</span>
+                            <button onClick={onClose} className="relative min-w-[38px] h-[38px] flex items-center justify-center rounded-full active:scale-95 transition duration-100 ease-in-out">
+                                <Icon.MoreVertical className="w-[24px] h-[24px] dark:stroke-background dark:stroke-background stroke-[2px] dark:text-background" />
                             </button>
                         </div>
                     </div>
