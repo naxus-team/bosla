@@ -1,4 +1,4 @@
-![logo Trademark(Bosla)](./bosla_trademark.png)
+![logo Trademark(Bosla)](./bosla.png)
 
 # Bosla
 
