@@ -7,7 +7,7 @@ import { t } from "../locales";
 
 type MenuProps = {
     openTab: boolean;
-    onCloseTab: () => void; 
+    onCloseTab: () => void; // 👈 دالة إغلاق
 };
 
 export default function BottomNavBar({ openTab, onCloseTab }: MenuProps) {
@@ -15,9 +15,9 @@ export default function BottomNavBar({ openTab, onCloseTab }: MenuProps) {
         <AnimatePresence>
             {openTab && (
                 <motion.div
-                    animate={{ x: 0 }}     
-                    exit={{ x: 50 }}      
-                    transition={{ duration: 0.4, ease: "easeInOut" }} 
+                    animate={{ x: 0 }}     // أثناء الظهور
+                    exit={{ x: 50 }}      // عند الاختفاء
+                    transition={{ duration: 0.4, ease: "easeInOut" }} // سرعة ونعومة
                     className="z-[9999] absolute bottom-0 left-0 right-0"
                 >
                     <div className="relative w-full flex items-center bg-background h-[72px]  dark:bg-background_dark shadow-top-xl">

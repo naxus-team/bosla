@@ -5,8 +5,8 @@ import { t } from "../locales";
 
 
 type BottomSheetProps = {
-    id: number;                 
-    activeId: number | null;    
+    id: number;                 // 👈 رقم الشيت
+    activeId: number | null;    // 👈 الشيت المفتوح حاليًا
     onClose: () => void;
     title?: string;
     children?: React.ReactNode;
