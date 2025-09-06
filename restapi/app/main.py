@@ -14,7 +14,7 @@ app = FastAPI()
 # السماح للـ React app بالوصول
 origins = [
     "http://localhost:3000",
-    "http://192.168.1.3:3000",
+    "http://192.168.1.2:3000",
 ]
 
 app.add_middleware(
@@ -106,4 +106,4 @@ def create_vehicle(vehicle: schemas.VehicleCreate):
 
 
 if __name__ == "__main__":
-    app.run(host="192.168.1.3", port=8000)
+    app.run(host="192.168.1.2", port=8000)

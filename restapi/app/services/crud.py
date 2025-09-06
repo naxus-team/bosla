@@ -11,7 +11,7 @@ def generate_client_id() -> str:
 
 SECRET_KEY = "your-secret-key"
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60  # ساعة
+ACCESS_TOKEN_EXPIRE_MINUTES = 60*60  # ساعة / يومين ونص
 
 def create_access_token(data: dict, expires_delta: timedelta = None):
     to_encode = data.copy()

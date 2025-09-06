@@ -1,9 +1,13 @@
-export const ar_eg = {
+export const ar_gcc = {
     app: {
-        description: "بوصلة هو تطبيق مفتوح المصدر بيقدملك تجربة تسجيل دخول سهلة وآمنة.",
+        name: "بوصلة",
+        types: {
+            drive: "Drive"
+        },
+        description: "بوصلة تطبيق مفتوح المصدر يعطيك تجربة تسجيل دخول سهلة وآمنة.",
         title: "بوصلة - تسجيل الدخول",
         subtitle: "سجّل دخولك لحسابك",
-        welcome: "أهلاً بيك في بوصلة",
+        welcome: "هلا فيك في بوصلة",
         footer: {
             auth: "بالاستمرار، انت موافق على ",
             terms: "شروط الاستخدام",
@@ -13,38 +17,38 @@ export const ar_eg = {
     },
     login: {
         default: "تسجيل الدخول",
-        welcome_back: "أهلاً بيك تاني!",
+        welcome_back: "هلا من جديد!",
         enter: {
-            email: 'اكتب إيميلك',
-            phone: 'اكتب رقم تليفونك',
-            password: 'اكتب كلمة السر بتاعتك'
+            email: 'اكتب بريدك الإلكتروني',
+            phone: 'اكتب رقم جوالك',
+            password: 'اكتب كلمة المرور'
         },
         continue: {
-            google: 'تابع بجوجل',
-            facebook: 'تابع بفيسبوك',
-            apple: 'تابع بآبل',
-            x: 'تابع بإكس',
-            github: 'تابع بجيت هب',
-            mail: 'تابع بالإيميل',
-            default: 'تابع'
+            google: 'استمر بجوجل',
+            facebook: 'استمر بفيسبوك',
+            apple: 'استمر بآبل',
+            x: 'استمر بإكس',
+            github: 'استمر بجيت هب',
+            mail: 'استمر بالبريد الإلكتروني',
+            default: 'استمر'
         },
         tips: {
-            dhaa: "معندكش حساب؟",
-            ahaa: "معندكش حساب؟"
+            dhaa: "ما عندك حساب؟",
+            ahaa: "ما عندك حساب؟"
         },
-        password: "كلمة السر",
+        password: "كلمة المرور",
         submit: "دخول",
     },
     register: {
         default: "سجل"
     },
     common: {
-        get_started: "يلا نبدأ",
+        get_started: "ابدأ الآن",
         and: "و",
         or: "أو",
         to: "إلى",
         from: "من",
-        search: "دور",
+        search: "ابحث",
         settings: "الإعدادات",
         account: "الحساب",
         app_language: "لغة التطبيق",
@@ -57,14 +61,14 @@ export const ar_eg = {
             english: "الإنجليزية",
             french: "الفرنسية",
             spanish: "الإسبانية",
-            find_driver: "دور على سواق",
+            find_driver: "ابحث عن سائق",
             book_ride: "احجز رحلة",
-            show_fare: "اعرض السعر",
+            show_fare: "عرض السعر",
         },
         lang_switch: "غيّر اللغة",
     },
     where_to: {
-        placeholder: "رايح على فين؟..",
-        search: "دور",
+        placeholder: "رايح على وين؟..",
+        search: "ابحث",
     },
 };

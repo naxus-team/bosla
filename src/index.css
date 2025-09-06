@@ -12,6 +12,15 @@
   color: rgba(238, 15, 56, 1);
 }
 
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.icon-bubble {
+  animation: pulse 2s infinite;
+}
+
 @font-face {
   font-family: 'Cairo';
   src: url('./fonts/Cairo-VariableFont_slnt,wght.ttf') format('truetype');

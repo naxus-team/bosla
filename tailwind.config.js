@@ -7,7 +7,7 @@ module.exports = {
     theme: {
         extend: {
             boxShadow: {
-                'shadow-top-xl': '0 -16px 40px rgba(0,0,0,0.15)', // ظل للأعلى قوي
+                'top-xl': '0 -4px 8px rgba(26, 26, 26, 0.04), 0 -2px 4px rgba(0, 0, 0, 0.025)',
                 'shadow-top-lg': '0 -10px 24px rgba(0,0,0,0.16)', // أقل شوية
                 'shadow-gray_inset': '0 0 0 2px inset rgba(77,77,77,1)', // ظل رمادي داخلي
                 'shadow-gray_dark_inset': '0 0 0 2px rgba(77,77,77,1)', // ظل رمادي داكن داخلي
