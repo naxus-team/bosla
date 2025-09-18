@@ -9,5 +9,13 @@
   "exclude": [
     "**/node_modules",
     "**/Pods"
-  ]
+  ],
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "allowJs": true,
+    "checkJs": false,
+    "types": [
+      "react"
+    ]
+  }
 }

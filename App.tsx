@@ -1,17 +1,63 @@
-import "./global.css"
-import { Text, SafeAreaView as Div } from "react-native";
-import Svg, { Path } from 'react-native-svg';
+import "./global.css";
+import React, { useEffect, useState, useCallback } from "react";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import BootSplash from "react-native-bootsplash";
 
+import { StatusBar, I18nManager, Alert, View } from "react-native";
+import { NativeRouter, useRoutes } from "react-router-native";
+import RNRestart from "react-native-restart";
+
+import { loadLang, getLang, setLang } from "./locales";
+import { getTheme, setTheme, initTheme, ThemeType } from "./theme";
+import routes from "./components/Router";
+
+function AppRoutes() {
+  const element = useRoutes(routes);
+  return (
+    <SafeAreaProvider>
+      <SafeAreaView style={{ flex: 1, backgroundColor: "white", flexDirection: "row", direction: "rtl" }}>
+        {element}
+      </SafeAreaView>
+    </SafeAreaProvider>
+  );
+}
 
 export default function App() {
+  const [isReady, setIsReady] = useState(false);
+  const [theme, setThemeState] = useState<ThemeType>("light");
+
+  useEffect(() => {
+    // Load Language
+    loadLang();
+    const lang = getLang();
+    const shouldBeRTL = ["ar_gl"].includes(lang);
+
+    if (lang === "ar_gl") {
+      I18nManager.allowRTL(true);
+      I18nManager.forceRTL(true);
+    } else {
+      I18nManager.allowRTL(false);
+      I18nManager.forceRTL(false);
+    }
+
+    // Default Language
+    setLang("ar_gl");
+
+    setIsReady(true);
+  }, []);
+
+  useEffect(() => {
+    // 👇 لازم تخفي BootSplash لما كل حاجة تجهز
+    BootSplash.hide({ fade: true });
+  }, []);
+
   return (
-    <Div className="flex-1 items-center justify-center bg-white">
-      <Svg width="100" height="100" viewBox="0 0 100 100">
-        <Path d="M10,10 L90,10 L90,90 L10,90 Z" fill="blue" />
-      </Svg>
-      <Text className="text-xl font-bold text-blue-500">
-        توكلنا علي الله
-      </Text>
-    </Div>
+    <NativeRouter>
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor="transparent"
+      />
+      <AppRoutes />
+    </NativeRouter>
   );
 }
