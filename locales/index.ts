@@ -19,7 +19,7 @@ const defaultValues = {
 
 type LangType = keyof typeof languages;
 
-let currentLang: LangType = "en_us";
+let currentLang: LangType = "ar_gl";
 
 // تحميل اللغة المخزنة عند بداية التشغيل
 export async function loadLang() {

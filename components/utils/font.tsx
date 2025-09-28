@@ -1,6 +1,6 @@
 import { getLang } from "../../locales";
 
-const isArabic = getLang().startsWith("ar");
+const isArabic = getLang() === "ar_gl";
 
 export const Fonts = {
     regular: isArabic ? "NotoSansArabic-Regular" : "NotoSans-Regular",

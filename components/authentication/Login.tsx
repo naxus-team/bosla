@@ -1,69 +1,69 @@
-import { useEffect, useState } from 'react';
-import { Text, View, TextInput, Pressable, Dimensions, Vibration, Keyboard, StyleSheet, Button } from 'react-native';
+import { useEffect, useState } from "react";
+import {
+  Text,
+  View,
+  Pressable,
+  Dimensions,
+  Vibration,
+  Keyboard,
+  StyleSheet,
+  KeyboardAvoidingView, Platform
+} from "react-native";
+import { Btn } from "../reusable";
+
+import { Navigate } from "react-router-native";
+
 import { Menu, MenuOptions, MenuOption, MenuTrigger, MenuProvider } from "react-native-popup-menu";
 import * as Animatable from "react-native-animatable";
-import Animated, {
-  Keyframe,
-  FadeIn,
-  FadeOut,
-  SlideInLeft,
-  SlideOutLeft,
-  SlideInRight,
-  SlideOutRight,
-  ZoomIn,
-  ZoomOut,
-  runOnJS
-} from "react-native-reanimated";
-import { EnteringFromRight, ExitingToLeft, ExitingToRight, EnteringFromLeft } from "../animations";
+import Animated from "react-native-reanimated";
+import { EnteringFromRight, ExitingToRight, EnteringFromLeft, ExitingToLeft } from "../animations";
 
-
-import Orientation from 'react-native-orientation-locker';
 import { t, getLang } from "../../locales";
-import * as Ico from "lucide-react-native";
 import BottomSheet from "../shared/BottomSheet";
 import CountrySelector from "../shared/CountrySelector";
 import { countryCodeMap } from "../../locales/countryCodeMap";
-import Logo from "../utils/Logo"
+import { useAuth } from "../hook/useAuth";
+import { User, StorageKeys } from "../types";
+import uuid from "react-native-uuid";
 
-import { setData, getData, removeData } from "../storage";
-
-
+import { setData, getData } from "../storage";
 import { CountriesProvider, useCountries } from "../../providers/CountriesProvider";
+import { ArrowLeftIcon, MagnifyingGlassIcon } from "react-native-heroicons/outline";
 import { Input, Dropdown } from "../reusable";
+import { Fonts } from "../utils/font";
+import { SmartphoneIcon } from "lucide-react-native";
+import { vibrate } from "../hook/vibrations";
 
 const { height } = Dimensions.get("window");
 
-
 export function AuthLogin() {
+  const [goDashboard, setGoDashboard] = useState(false);
+  const { loading, authorized } = useAuth();
+
+
   const [isAnimating, setIsAnimating] = useState(false);
-
   const [number_phone, setValueNumberPhone] = useState("");
-  const [otp_code, setValueOtpCode] = useState("");
+  const [searchNumber, setSearchNumber] = useState("");
 
+  const [otp_code, setValueOtpCode] = useState("");
   const [showSheet, setShowSheet] = useState(false);
   const [countries, setCountries] = useState<[string, string][]>([]);
   const [countryCode, setCountryCode] = useState("eg");
 
-  useEffect(() => {
-    // تحميل البيانات (محلي أو من API)
-    const loadData = async () => {
-      // لو من API هتستخدم fetch هنا
-      const entries = Object.entries(countryCodeMap);
-      setCountries(entries);
-    };
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const [SelectedCountry, setSelectedCountry] = useState("");
+  const [SelectDial, setSelectDial] = useState("");
+  const [step, setStep] = useState<"phone" | "otp">("phone");
+  const [token, setToken] = useState<string | null>(null);
 
-    loadData();
+  useEffect(() => {
+    const entries = Object.entries(countryCodeMap);
+    setCountries(entries);
   }, []);
 
-  const [keyboardVisible, setKeyboardVisible] = useState(false);
-
   useEffect(() => {
-    const showSub = Keyboard.addListener("keyboardDidShow", () =>
-      setKeyboardVisible(true)
-    );
-    const hideSub = Keyboard.addListener("keyboardDidHide", () =>
-      setKeyboardVisible(false)
-    );
+    const showSub = Keyboard.addListener("keyboardDidShow", () => setKeyboardVisible(true));
+    const hideSub = Keyboard.addListener("keyboardDidHide", () => setKeyboardVisible(false));
 
     return () => {
       showSub.remove();
@@ -71,183 +71,114 @@ export function AuthLogin() {
     };
   }, []);
 
-  const { currentCountry } = useCountries();
-  const [SelectedCountry, setSelectedCountry] = useState("");
-  const [SelectDial, setSelectDial] = useState("");
-
-
-  const [step, setStep] = useState<"phone" | "otp">("phone");
   const goToStep = (newStep: "phone" | "otp") => {
-    setIsAnimating(true); // قفل اللمس
+    setIsAnimating(true);
     setStep(newStep);
-
-    // بعد 300ms (مدة الانيميشن) افتح اللمس تاني
-    setTimeout(() => {
-      setIsAnimating(false);
-    }, 300);
+    setTimeout(() => setIsAnimating(false), 300);
   };
 
   const handlePress = async () => {
-    Vibration.vibrate(60);
-    await setData("token", "abc123xyz");
+    setData<string>(StorageKeys.Token, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...");
+    const user: User = {
+      clientId: uuid.v4().toString(),
+      firstname: "أحمد",
+      lastname: "ياسر",
+      username: "ahmedyasser",
+      email: "ahmedyaser@hotmail.com",
+      phone: "+201019785597",
+      avatar: "https://scontent.fcai30-1.fna.fbcdn.net/v/t39.30808-6/552195197_1301750204741436_4684378411474012091_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=cn3Tb8PK1JcQ7kNvwGC2dy-&_nc_oc=Adl00It8JAFfHLna6ln3cHgZysyNz-RLTwuWpqdTBeWMFvFUhsLrvE6h7IyhKSzP8pQ&_nc_zt=23&_nc_ht=scontent.fcai30-1.fna&_nc_gid=AsCkkskeyXY27lvkmJav3A&oh=00_AfZpy7p74aeL0WuHSiksn7cXzvVewpa99pBHdxbTUXscSQ&oe=68DBF8CC",
+      role: "user",
+      verify: true,
+      createdAt: new Date().toISOString(),
+    };
+    setData<User>(StorageKeys.User, user);
+    setGoDashboard(true);
+    vibrate(60);
   };
 
-  const [token, setToken] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchToken = async () => {
-      const t = await getData("token");
-      setToken(t);
-    };
-    fetchToken();
-  }, []);
+  if (goDashboard || authorized) {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} pointerEvents={isAnimating ? "none" : "auto"}>
+    <View style={styles.safeArea} pointerEvents={isAnimating ? "none" : "auto"}>
       <CountriesProvider>
         {step === "phone" && (
-          <Animated.View
-            key="phone"
-            entering={EnteringFromRight}
-            exiting={ExitingToRight}
-          >
-
-
+          <Animated.View key="phone" entering={EnteringFromRight} exiting={ExitingToRight}>
             <MenuProvider>
-              <View className='flex-1 w-full items-center justify-center bg-background overflow-auto gap-8'>
 
-                <View className="h-screen w-full items-center px-6 gap-8" style={{ height: height - 128 }}>
-                  <View style={{ flexDirection: "row", justifyContent: "flex-end" }} className='flex w-full'>
-
-                    <Menu>
-                      <MenuTrigger style={{
-                        width: 24,
-                        height: 38,
-                        borderRadius: 200
-                      }}>
-                        <Ico.EllipsisVertical size={24} color="#242424" />
-                      </MenuTrigger>
-                      <MenuOptions
-                        customStyles={{
-                          optionsContainer: {
-                            marginTop: 35, // ينزل المنيو تحت الزرار
-                            borderRadius: 16,
-                            padding: 0,
-                            elevation: 24,
-                            overflow: "hidden", // عشان الانيميشن يبان نضيف
-                          },
-                        }}
-                      >
-                        <Animatable.View animation="fadeInDown" duration={200}>
-
-                          <MenuOption>
-                            <View className="active:bg-black/10 rounded-xl">
-                              <Text style={{ fontFamily: getLang().startsWith("ar") ? "NotoSansArabic-Regular" : "NotoSans-Regular", padding: 10 }}>مساعدة</Text>
-                            </View>
-                          </MenuOption>
-                          <MenuOption>
-                            <View className="active:bg-black/10 rounded-xl">
-                              <Text style={{ fontFamily: getLang().startsWith("ar") ? "NotoSansArabic-Regular" : "NotoSans-Regular", padding: 10 }}>الإعدادات</Text>
-                            </View>
-                          </MenuOption>
-                          <MenuOption>
-                            <View className="active:bg-black/10 rounded-xl">
-                              <Text style={{ fontFamily: getLang().startsWith("ar") ? "NotoSansArabic-Regular" : "NotoSans-Regular", padding: 10 }}>حول التطبيق</Text>
-                            </View>
-                          </MenuOption>
-                        </Animatable.View>
-
-                      </MenuOptions>
-
-                    </Menu>
-                  </View>
-                  <View className="flex-1 justify-center items-center w-full h-full gap-8">
-                    <View className='flex items-center'>
-                      <Logo />
-                    </View>
-                    <View className='gap-4'>
-                      <Text style={{ fontFamily: getLang().startsWith("ar") ? "NotoSansArabic-SemiBold" : "NotoSans-SemiBold" }} className="text-xl text-center text-black"
-                      >
-                        {t("login.default")} {t("common.to")} {t("app.name")}
-                      </Text >
-                      <View>
-                        <Text style={{ fontFamily: getLang().startsWith("ar") ? "NotoSansArabic-Regular" : "NotoSans-Regular" }} className="text-sm text-center text-black/60"
-                        >
-                          {t("login.phone_confirm.a")} {t("login.phone_confirm.b")}
-                        </Text >
-
-                      </View>
-                    </View>
-                  </View>
-
-                  <View className="flex-1 justify-center items-start w-full gap-8"
-                    style={[
-
-                      { justifyContent: "flex-start" }, // { justifyContent: keyboardVisible ? "flex-start" : "center" },
-                    ]}>
-                    <Dropdown
-                      label={t("countries.country")}
-                      value={SelectedCountry}
-                      onPress={() => setShowSheet(true)}
-                      data={countryCode}
-                    />
-                    <Input
-                      label={t("login.phone_number")}
-                      value={number_phone}
-                      onChangeText={setValueNumberPhone}
-                      keyboardType="phone-pad"
-                      maxLength={11}
-                      pressableContent={
-                        <Text
-                          style={{
-                            fontFamily: getLang().startsWith("ar")
-                              ? "NotoSansArabic-SemiBold"
-                              : "NotoSans-SemiBold",
-                          }}
-                          className="text-xl text-black bg-white"
-                          numberOfLines={1}
-                          ellipsizeMode="clip"
-                        >
-                          {SelectDial}+
-                        </Text>
-                      }
-                    />
-                  </View>
+              {/* Logo & Title */}
+              <KeyboardAvoidingView
+                style={styles.container}
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                keyboardVerticalOffset={80} // تقدر تزود/تنقص حسب مكان الـ header
+              >
+                <View style={styles.header}>
+                  {/* <Logo /> */}
+                  <Text style={styles.title}>
+                    {t("login.default")} {t("common.to")} {t("app.name")}
+                  </Text>
+                  <Text style={styles.subtitle}>
+                    {t("login.phone_confirm.a")} {t("login.phone_confirm.b")}
+                  </Text>
                 </View>
 
-                <View className={`relative flex ${getLang().startsWith("ar") ? "flex-row-reverse" : "flex-row"} ${getLang().startsWith("ar") ? "items-start" : "items-end"} justify-center w-full`}>
-                  <Pressable
-                    className='flex bg-primary rounded-full'
-                    android_ripple={{ color: "rgba(0,0,0,1)", radius: 200, borderless: false }}
-                    style={{ overflow: "hidden" }}
-                    onPress={() => {
-                      Vibration.vibrate(60);
-                      goToStep("otp");
+                {/* Inputs */}
+                <View style={styles.form}>
+                  <Dropdown
+                    label={t("countries.country")}
+                    value={SelectedCountry}
+                    onPress={() => setShowSheet(true)}
+                    data={countryCode}
+                  />
+                  <Input
+                    label={t("login.phone_number")}
+                    value={number_phone}
+                    onChangeText={setValueNumberPhone}
+                    onPressablePress={() => { setShowSheet(true) }}
+                    keyboardType="phone-pad"
+                    maxLength={11}
+                    pressableContent={
+                      SelectDial && <Text style={styles.dialText}>{SelectDial}+</Text>
+                    }
+                  />
+                </View>
+
+                {/* Next Button */}
+                <View style={styles.buttonWrapper}>
+                  <Btn
+                    label={t("common.next")}
+                    style={{
+                      background: "rgba(0,0,0,1)",
+                      pressedBackground: "rgba(0,0,0,.8)",
+                      colorText: "white",
+                      radius: 48,
+                      height: 48,
+                      fullWidth: true,
+                      animationSpeed: 100,
+                      textAlign: "center",
+                      animationType: "default",
                     }}
-                  >
-                    <Animated.View
-                      className="flex flex-row items-center justify-center px-4 py-3 rounded-full w-[148px] h-[52px] gap-4"
-                    >
-                      <Text style={{ fontFamily: getLang().startsWith("ar") ? "NotoSansArabic-SemiBold" : "NotoSans-SemiBold" }} className="text-lg text-white">
-                        {t("common.next")}
-                      </Text >
-                      <Ico.ArrowLeft size={24} color="#ffffff" />
-                    </Animated.View>
-                  </Pressable>
+                    onPress={() => { goToStep("otp"); vibrate(60) }}
+                    customize={
+                      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", paddingHorizontal: 16, width: 192 }}>
+                        <Text
+                          style={styles.buttonText}
+                        >
+                          {t("common.next")}
+                        </Text>
+                      </View>
+                    }
+
+                  />
                 </View>
-                <BottomSheet
-                  visible={showSheet}
-                  onClose={() => setShowSheet(false)}
-                  height={400}
-                >
-                  <CountrySelector onSelect={(code, name, dial) => { setShowSheet(false); setCountryCode(code); setSelectedCountry(name); setSelectDial(dial) }} />
-                </BottomSheet>
-              </View>
+
+              </KeyboardAvoidingView>
             </MenuProvider>
           </Animated.View>
-
         )}
 
+        {/* OTP STEP */}
         {step === "otp" && (
           <Animated.View
             key="otp"
@@ -255,96 +186,205 @@ export function AuthLogin() {
             exiting={ExitingToLeft}
             style={{ width: "100%" }}
           >
-            <MenuProvider>
-              <View className='flex-1 w-full items-center justify-center bg-background overflow-auto gap-8'>
+            <View style={styles.container}>
+              <View style={styles.header}>
+                {/* <Logo /> */}
+                <SmartphoneIcon size={32} color="rgba(0,0,0,0.25)" />
 
-                <View className="h-screen w-full items-center px-6 gap-8" style={{ height: height - 182 }}>
-                  <View className="flex-1 justify-center items-center w-full h-full gap-8">
-                    <View className='gap-4'>
-                      <View style={{ flexDirection: "row", justifyContent: "center" }}>
-                        <Ico.Smartphone size={32} color={`rgba(0,0,0,0.25)`} />
-                      </View>
-                      <Text style={{ fontFamily: getLang().startsWith("ar") ? "NotoSansArabic-SemiBold" : "NotoSans-SemiBold" }} className="text-xl text-center text-black"
-                      >
-                        {t("login.phone_confirm.z")}
-                      </Text >
-                      <View>
-                        <Text style={{ fontFamily: getLang().startsWith("ar") ? "NotoSansArabic-Regular" : "NotoSans-Regular" }} className="text-sm text-center text-black/60"
-                        >
-                          {t("login.phone_confirm.c")} {t("login.phone_confirm.d")}
-                        </Text >
-
-
-                      </View>
-                      <Text style={{ fontFamily: getLang().startsWith("ar") ? "NotoSansArabic-SemiBold" : "NotoSans-SemiBold", direction: "ltr" }} className="text-lg text-center text-primary"
-                        onPress={() => {
-                          Vibration.vibrate(60);
-                          goToStep("phone");
-                        }}
-                      >
-                        +{SelectDial}{number_phone}
-                      </Text >
-                    </View>
-                  </View>
-
-                  <View className="flex-1 justify-center items-start w-full gap-4"
-                    style={[
-
-                      { justifyContent: "flex-start" },
-                    ]}>
-                    <Input
-                      label={t("login.phone_verify")}
-                      value={otp_code}
-                      onChangeText={setValueOtpCode}
-                      keyboardType="phone-pad"
-                      maxLength={6}
-                    />
-                    <View className='px-4 flex items-center flex-row gap-2'>
-                      <Text
-                        style={{ fontFamily: getLang().startsWith("ar") ? "NotoSansArabic-Regular" : "NotoSans-Regular" }} className="text-base text-center text-black/60">
-                        {t("login.phone_confirm.n")}
-                      </Text>
-                      <Pressable>
-                        <Text
-                          style={{ fontFamily: getLang().startsWith("ar") ? "NotoSansArabic-SemiBold" : "NotoSans-SemiBold" }} className="text-base text-center text-primary">
-                          {t("login.phone_confirm.resend")}
-                        </Text>
-                      </Pressable>
-                    </View>
-                  </View>
-                </View>
-
-                <View className={`relative flex ${getLang().startsWith("ar") ? "flex-row-reverse" : "flex-row"} ${getLang().startsWith("ar") ? "items-start" : "items-end"} justify-center w-full`}>
-                  <Pressable
-                    className='flex bg-primary rounded-full'
-                    android_ripple={{ color: "rgba(0,0,0,1)", radius: 200, borderless: false }}
-                    style={{ overflow: "hidden" }}
-                    onPress={() => handlePress}
-                  >
-                    <Animated.View
-                      className="flex flex-row items-center justify-center px-4 py-3 rounded-full w-[148px] h-[52px] gap-4"
-
-                    >
-                      <Text style={{ fontFamily: getLang().startsWith("ar") ? "NotoSansArabic-SemiBold" : "NotoSans-SemiBold" }} className="text-lg text-white">
-                        {t("common.confirm")}
-                      </Text >
-                      <Ico.ArrowLeft size={24} color="#ffffff" />
-                    </Animated.View>
-                  </Pressable>
-                </View>
+                <Text style={styles.title}>
+                  {t("login.default")} {t("common.to")} {t("app.name")}
+                </Text>
+                <Text style={styles.subtitle}>
+                  {t("login.phone_confirm.a")} {t("login.phone_confirm.b")}
+                </Text>
+                <Text style={styles.otpNumber} onPress={() => goToStep("phone")}>
+                  +{SelectDial}
+                  {number_phone}
+                </Text>
               </View>
-            </MenuProvider >
+
+              {/* OTP Input */}
+              <View style={styles.form}>
+                <Input
+                  label={t("login.phone_verify")}
+                  value={otp_code}
+                  onChangeText={setValueOtpCode}
+                  keyboardType="phone-pad"
+                  maxLength={6}
+                />
+              </View>
+
+              {/* Confirm Button */}
+              <View style={styles.buttonWrapper}>
+                <Btn
+                  label={t("common.next")}
+                  style={{
+                    background: "rgba(0,0,0,1)",
+                    pressedBackground: "rgba(0,0,0,.8)",
+                    colorText: "white",
+                    radius: 48,
+                    height: 48,
+                    fullWidth: true,
+                    animationSpeed: 100,
+                    textAlign: "center",
+                    animationType: "default",
+                  }}
+                  onPress={() => { handlePress() }}
+                  customize={
+                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", paddingHorizontal: 16, width: 192 }}>
+                      <Text
+                        style={styles.buttonText}
+                      >
+                        {t("common.confirm")}
+                      </Text>
+                    </View>
+                  }
+
+                />
+              </View>
+            </View>
           </Animated.View>
         )}
-      </CountriesProvider >
-    </View>
-
+        {/* Country Selector */}
+        <BottomSheet visible={showSheet} onClose={() => setShowSheet(false)}>
+          <Input
+            iconContent={
+              <MagnifyingGlassIcon color={"rgba(0,0,0,0.4)"} size={24} strokeWidth={2} />
+            }
+            label={t("common.search")}
+            value={searchNumber}
+            onChangeText={setSearchNumber}
+          />
+          <CountrySelector
+            onSelect={(code, name, dial) => {
+              setShowSheet(false);
+              setCountryCode(code);
+              setSelectedCountry(name);
+              setSelectDial(dial);
+            }}
+          />
+        </BottomSheet>
+      </CountriesProvider>
+    </View >
   );
-};
-
+}
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", alignItems: "center" },
-  layer: { width: "100%", alignItems: "center" },
-  title: { fontSize: 20, marginBottom: 20 },
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#f6f6f6",
+  },
+  container: {
+    flex: 1,
+    padding: 24,
+    paddingHorizontal: 0,
+
+  },
+  menuContainer: {
+    height: 52,
+    justifyContent: "center",
+    alignItems: "flex-end",
+    paddingHorizontal: 16
+  },
+  menuTrigger: {
+    width: 32,
+    height: 32,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  menuOption: {
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+  },
+  menuOptionText: {
+    fontSize: 16,
+    color: "#333",
+  },
+  header: {
+    height: 228,
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 16,
+  },
+  title: {
+    fontSize: 24,
+    lineHeight: 32,
+    fontFamily: Fonts["bold"],
+    textAlign: "center",
+    color: "#000",
+  },
+  subtitle: {
+    fontFamily: Fonts["regular"],
+    fontSize: 18,
+    lineHeight: 28,
+    color: "rgba(0,0,0,0.6)",
+    textAlign: "center",
+  },
+  form: {
+    height: 300,
+    padding: 24,
+    paddingTop: 0,
+    width: "100%",
+    gap: 16,
+  },
+  dialText: {
+    fontFamily: Fonts["medium"],
+    fontSize: 18,
+    color: "#000",
+  },
+  buttonWrapper: {
+    position: "absolute",
+    top: height - 96,
+    width: "100%",
+    height: 96,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  button: {
+    backgroundColor: "#EE0F38",
+    borderRadius: 30,
+    overflow: "hidden",
+  },
+  buttonContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    gap: 8,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
+    lineHeight: 24,
+    fontFamily: Fonts["medium"],
+  },
+  otpTitle: {
+    fontSize: 20,
+    fontFamily: Fonts["medium"],
+    textAlign: "center",
+    color: "#000",
+  },
+  otpNumber: {
+    fontSize: 18,
+    fontFamily: Fonts["medium"],
+    color: "#EE0F38",
+    textAlign: "center",
+  },
+  resendRow: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 8,
+    marginTop: 8,
+  },
+  resendText: {
+    fontSize: 14,
+    color: "rgba(0,0,0,0.6)",
+  },
+  resendLink: {
+    fontSize: 14,
+    color: "#EE0F38",
+    fontFamily: Fonts["medium"],
+  },
 });

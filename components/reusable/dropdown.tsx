@@ -14,7 +14,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { getLang } from "../../locales";
 
-import CountryFlag from "react-native-country-flag";
+import CountryFlag from "../utils/countryFlag";
 import * as Ico from "lucide-react-native";
 
 type DropdownProps = {
@@ -58,15 +58,13 @@ export default function Dropdown({
             onPress={onPress}
             style={[
                 {
-                    height: 70,
-                    borderRadius: 16,
-                    borderWidth: 1,
-                    borderColor: "rgba(0,0,0,.125)",
+                    height: 72,
+                    borderRadius: 24,
                     paddingHorizontal: 16,
                     flexDirection: "row",
                     alignItems: "center",
                     justifyContent: "space-between",
-                    backgroundColor: "white",
+                    backgroundColor: "#fff",
                 },
                 style,
             ]}
@@ -92,7 +90,8 @@ export default function Dropdown({
                 {value && (
 
                     <View className="flex items-center mt-4 flex-row gap-2">
-                        <CountryFlag isoCode={data || ""} size={16} style={{ borderRadius: 4 }} />
+                        <CountryFlag code={data || ""} size={24} />
+
                         <Text
                             numberOfLines={1}
                             ellipsizeMode="tail"

@@ -1,7 +1,6 @@
 import React, { useState, useRef } from "react";
 import { View, Text, FlatList, Pressable, ActivityIndicator, NativeSyntheticEvent, NativeScrollEvent, Animated } from "react-native";
-import CountryFlag from "react-native-country-flag";
-import LinearGradient from "react-native-linear-gradient";
+import CountryFlag from "../utils/countryFlag";
 import { getLang } from "../../locales";
 
 import { useCountries } from "../../providers/CountriesProvider";
@@ -47,39 +46,8 @@ export default function CountrySelector({ onSelect, onScrollProgress }: Props) {
         outputRange: [0, 4],
     });
 
-    if (loading) {
-        return (
-            <View className="flex items-center justify-center h-full">
-                <ActivityIndicator size="large" color="#1A1A1A" />
-            </View>
-        );
-    }
-
     return (
         <>
-            <Animated.View
-                style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    height: shadowHeight,
-                    zIndex: 10,
-                }}
-            >
-                <Animated.View
-                    style={{
-                        flex: 1,
-                        opacity: shadowAnim,
-                    }}
-                >
-                    <LinearGradient
-                        colors={["rgba(0,0,0,0.08)", "transparent"]}
-                        style={{ flex: 1 }}
-                    />
-                </Animated.View>
-            </Animated.View>
-
             <FlatList<CountryData>
                 data={countries}
                 style={{ padding: 8 }}
@@ -89,10 +57,10 @@ export default function CountrySelector({ onSelect, onScrollProgress }: Props) {
                 renderItem={({ item }) => (
                     <Pressable
                         onPress={() => onSelect(item.code, item.name, item.dial ?? "eg")}
-                        className="flex-row items-center justify-between h-[58px] px-4 border-b border-[rgba(0,0,0,0.04)]"
+                        className="flex-row items-center justify-between h-[58px] px-4"
                     >
                         <View className="flex-row items-center gap-4">
-                            <CountryFlag isoCode={item.flagCode.toUpperCase()} size={20} style={{ borderRadius: 4 }} />
+                            <CountryFlag code={item.flagCode.toUpperCase() || ""} size={20} />
                             <Text style={{ fontFamily: getLang().startsWith("ar") ? "NotoSansArabic-SemiBold" : "NotoSans-SemiBold" }} className="text-lg text-black">{item.name}</Text>
                         </View>
                         <Text style={{ fontFamily: getLang().startsWith("ar") ? "NotoSansArabic-Regular" : "NotoSans-Regular" }} className="text-lg text-black/60">+{item.dial ?? "1"}</Text>

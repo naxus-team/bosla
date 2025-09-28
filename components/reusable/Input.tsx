@@ -12,9 +12,11 @@ import Animated, {
     useAnimatedStyle,
     withTiming,
 } from "react-native-reanimated";
+
 import { getLang } from "../../locales";
 
 type InputProps = {
+    iconContent?: React.ReactNode;
     label: string;
     value: string;
     onChangeText: (text: string) => void;
@@ -27,6 +29,7 @@ type InputProps = {
 };
 
 export default function Input({
+    iconContent,
     label,
     value,
     onChangeText,
@@ -71,8 +74,26 @@ export default function Input({
     }, [value]);
 
     return (
-        <View className="relative flex flex-row items-center justify-between border border-[rgba(0,0,0,.125)] rounded-2xl h-[70px] w-full px-4 gap-4">
-            <View className="flex-1 flex-col justify-center h-full">
+        <View style={
+            {
+                height: 72,
+                borderRadius: 24,
+                paddingHorizontal: 16,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                backgroundColor: "#fff",
+                gap: 8
+            }
+        }>
+            {iconContent && iconContent}
+            <View style={{
+                position: "relative",
+                flex: 1,
+                flexDirection: "row",
+                alignItems: "center",
+                height: 70
+            }}>
                 {/* Floating Label */}
                 <Animated.Text
                     style={[
@@ -104,7 +125,7 @@ export default function Input({
                     value={value}
                     onChangeText={onChangeText}
                     placeholder={placeholder ?? label}
-                    selectionColor="#E1E1E1"
+                    selectionColor="#EDEDED"
                     underlineColorAndroid="transparent"
                     autoCorrect={false}
                     spellCheck={false}
@@ -114,13 +135,19 @@ export default function Input({
                     textAlign="right"
                     onFocus={() => setFocused(true)}
                     onBlur={() => setFocused(false)}
+                    onSubmitEditing={(e) => {
+                        // هنا هيتفعل نفس وظيفة onPressablePress لو موجود
+                        if (onPressablePress) {
+                            onPressablePress(e.nativeEvent as any);
+                        }
+                    }}
+                    returnKeyType="done" // يظهر زر الصح على الكيبورد
                 />
             </View>
 
             {/* Divider + Pressable (اختياري) */}
             {pressableContent && onPressablePress && (
                 <>
-                    <View className="w-[1.5px] h-[16px] bg-[rgba(0,0,0,.125)]" />
                     <Pressable
                         onPress={onPressablePress}
                         className="flex justify-center h-[70px] px-2"

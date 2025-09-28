@@ -1,14 +1,16 @@
 import Svg, { Path } from "react-native-svg";
 
 type LogoProps = {
+    width?: number;
+    height?: number;
     color?: string;
 }
 
-export default function Logo({ color }: LogoProps) {
+export default function Logo({ width, height, color }: LogoProps) {
     return (
         <Svg
-            width={48}
-            height={36.78}
+            width={width || 58}
+            height={height || 46.78}
             viewBox="0 0 48 26.78"
         >
             <Path
@@ -21,17 +23,17 @@ export default function Logo({ color }: LogoProps) {
             <Path
                 d="M5.46,6.18l0.73-0.72c1.94-1.94,5.11-1.94,7.05,0l4.25,4.25l-4.25,4.25c-1.94,1.94-5.11,1.95-7.05,0l-0.72-0.72
           C3.51,11.29,3.51,8.13,5.46,6.18z"
-                fill="#fff"
+                fill="#f5f5f5"
             />
             <Path
                 d="M20.6,21.33c-1.94,1.94-5.11,1.94-7.05,0l-2.08-2.08c1.69-0.33,3.3-1.15,4.6-2.45l7.08-7.08l0,0l4.25-4.25
           c1.94-1.94,5.11-1.94,7.05,0l2.08,2.08c-1.69,0.33-3.3,1.15-4.6,2.45l-7.08,7.08l0,0L20.6,21.33z"
-                fill="#fff"
+                fill="#f5f5f5"
             />
             <Path
                 d="M42.54,20.6l-0.73,0.72c-1.95,1.94-5.11,1.94-7.05,0l-4.25-4.25l4.25-4.25c1.95-1.94,5.11-1.94,7.05,0
           l0.73,0.73C44.49,15.49,44.49,18.66,42.54,20.6z"
-                fill="#fff"
+                fill="#f5f5f5"
             />
         </Svg>
     )

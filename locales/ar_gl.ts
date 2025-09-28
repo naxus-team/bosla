@@ -13,7 +13,8 @@ export const ar_gl = {
             terms: "شروط الخدمة",
             privacy: "سياسة الخصوصية",
             cookies: "ملفات تعريف الارتباط",
-        }
+        },
+        "lang": "العربية"
     },
     login: {
         "default": "تسجيل الدخول",
@@ -58,13 +59,16 @@ export const ar_gl = {
         "next": "التالي",
         "confirm": "تأكيد",
         "requests": "الطلبات",
+        "profile": "الملف الشخصي",
+        "name": "الأسم",
+        "account": "الحساب",
+        "edit": "تعديل",
+        "settings": "الإعدادات",
         and: "و",
         or: "أو",
         to: "إلى",
         from: "من",
         search: "بحث",
-        settings: "الإعدادات",
-        "account": "الحساب",
         "app_language": "لغة التطبيق",
         "app": "التطبيق",
         "about_app": "حول التطبيق",

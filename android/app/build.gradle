@@ -78,14 +78,27 @@ android {
     compileSdk rootProject.ext.compileSdkVersion
 
     namespace "com.bosla"
+
+    def major = 1
+    def minor = 0
+    def patch = 0
+
     defaultConfig {
         applicationId "com.bosla"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode major * 100 + minor * 10 + patch
+        versionName "${major}.${minor}.${patch}"
     }
     signingConfigs {
+            release {
+        if (project.hasProperty('MYAPP_UPLOAD_STORE_FILE')) {
+            storeFile file(MYAPP_UPLOAD_STORE_FILE)
+            storePassword MYAPP_UPLOAD_STORE_PASSWORD
+            keyAlias MYAPP_UPLOAD_KEY_ALIAS
+            keyPassword MYAPP_UPLOAD_KEY_PASSWORD
+        }
+    }
         debug {
             storeFile file('debug.keystore')
             storePassword 'android'
@@ -103,6 +116,13 @@ android {
             signingConfig signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+        }
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def newName = "bosla-v${major}.${minor}.${patch}.apk"
+            output.outputFileName = newName
         }
     }
 }

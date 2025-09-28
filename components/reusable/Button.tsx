@@ -18,6 +18,11 @@ type Padding = number | {
     horizontal?: number;
 };
 
+type Border = void | {
+    borderColor?: string;
+    borderWidth?: number;
+};
+
 export type BtnStyle = {
     background?: string;
     pressedBackground?: string;
@@ -36,16 +41,18 @@ export type BtnStyle = {
     shadow?: boolean;
     elevation?: number;
     animationType?: "default" | "fadeIn" | "fadeOut" | "scaleIn" | "scaleOut" | "slideUp" | "slideDown";
+    border?: Border;
 };
 
 type BtnProps = {
-    label: string;
+    label?: string;
     style?: BtnStyle;
     onPress?: () => void;
     customize?: React.ReactNode;
+    animScale?: boolean;
 };
 
-export default function Btn({ label, style, onPress, customize }: BtnProps) {
+export default function Btn({ label, style, onPress, customize, animScale = false }: BtnProps) {
     const pressed = useSharedValue(0);
     const opacity = useSharedValue(1);
     const translateY = useSharedValue(0);
@@ -62,6 +69,14 @@ export default function Btn({ label, style, onPress, customize }: BtnProps) {
         };
     };
 
+    const getBorder = (): ViewStyle => {
+        if (!style?.border) return {};
+        return {
+            borderColor: style.border?.borderColor ?? "",
+            borderWidth: style.border?.borderWidth ?? 0,
+        };
+    };
+
     const animatedStyle = useAnimatedStyle(() => {
         const backgroundColor = interpolateColor(
             pressed.value,
@@ -73,7 +88,11 @@ export default function Btn({ label, style, onPress, customize }: BtnProps) {
 
         return {
             backgroundColor,
-            transform: [{ scale }],
+            transform: [
+                animScale
+                    ? { scale: scale } // هتستخدم sharedValue
+                    : { scale: 1 },          // القيمة العادية
+            ],
             height: style?.height ?? undefined,
             width: style?.fullWidth ? "100%" : style?.width ?? undefined,
             borderRadius: style?.radius ?? 8,
@@ -128,7 +147,9 @@ export default function Btn({ label, style, onPress, customize }: BtnProps) {
                 style={[
                     styles.btn,
                     animatedStyle,
-                    getPadding(),
+                    !style?.width && !style?.fullWidth
+                        ? { ...getPadding(), alignSelf: "flex-start" } // ✅ padding + يمنع التمدد
+                        : {},
                     style?.shadow
                         ? {
                             shadowColor: "#000",
@@ -138,6 +159,7 @@ export default function Btn({ label, style, onPress, customize }: BtnProps) {
                         }
                         : {},
                     style?.elevation ? { elevation: style.elevation } : {},
+                    getBorder(),
                 ]}
             >
                 {customize ?

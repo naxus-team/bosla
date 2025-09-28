@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
-import { Pressable, BackHandler, Animated, PanResponder, Dimensions } from "react-native";
+import { Pressable, BackHandler, Animated, PanResponder, Dimensions, Easing } from "react-native";
 import { View, TouchableWithoutFeedback } from "react-native";
+import SkeletonList from "../utils/SkeletonStack";
 
 const { height } = Dimensions.get("window");
 
@@ -8,7 +9,7 @@ const { height } = Dimensions.get("window");
 const SNAP_POINTS = [
     0,            // 👆 مفتوح بالكامل (مسافة صغيرة من فوق)
     height / 2,    // ✋ نص الشاشة
-    height - 38,   // 👇 تحت خالص (مخفي تقريباً)
+    height,   // 👇 تحت خالص (مخفي تقريباً)
 ];
 
 type BottomSheetProps = {
@@ -22,38 +23,13 @@ export default function BottomSheet({
     children,
     visible,
     onClose,
-    height: sheetHeight = height,
 }: BottomSheetProps) {
     const translateY = useRef(new Animated.Value(height)).current;
-    const opacity = useRef(new Animated.Value(0)).current;
-    const [lastHeight, setLastHeight] = useState(false);
     const [SheetHeight, setSheetHeight] = useState(height);
     const handleColor = useRef(new Animated.Value(0)).current;
 
-    const interpolatedColor = handleColor.interpolate({
-        inputRange: [0, 1],
-        outputRange: ["rgba(0,0,0,0.125)", "rgba(238,15,56,1)"], // رمادي → أزرق
-    });
-
-    const onHandlePressIn = () => {
-        Animated.timing(handleColor, {
-            toValue: 1,
-            duration: 150,
-            useNativeDriver: false,
-        }).start();
-    };
-
-    const onHandlePressOut = () => {
-        Animated.timing(handleColor, {
-            toValue: 0,
-            duration: 150,
-            useNativeDriver: false,
-        }).start();
-    };
-
-
     const radius = translateY.interpolate({
-        inputRange: [SNAP_POINTS[0], SNAP_POINTS[1], height],
+        inputRange: [SNAP_POINTS[0], SNAP_POINTS[1], SNAP_POINTS[2]],
         outputRange: [0, 32, 16],
         extrapolate: "clamp",
     });
@@ -65,14 +41,12 @@ export default function BottomSheet({
                 Math.abs(gestureState.dy) > 2,
 
             onPanResponderGrant: () => {
-                onHandlePressIn();
-                translateY.stopAnimation(); // وقف أي أنيميشن شغال
                 if (SheetHeight === height / 2) setSheetHeight(height);
             },
 
             onPanResponderMove: (_, gestureState) => {
-                const minY = SNAP_POINTS[0]; // أعلى نقطة
-                const maxY = height;         // آخر الشاشة
+                const minY = SNAP_POINTS[0];
+                const maxY = height;
 
                 let newY = gestureState.moveY - 48;
                 if (newY < minY) newY = minY;
@@ -82,7 +56,6 @@ export default function BottomSheet({
             },
 
             onPanResponderRelease: (_, gestureState) => {
-                onHandlePressOut();
                 const endValue = gestureState.moveY;
                 const middle = height / 2;
                 const downThreshold = middle + height * 0.2;
@@ -91,20 +64,25 @@ export default function BottomSheet({
                 if (endValue > downThreshold) {
                     Animated.timing(translateY, {
                         toValue: height,
-                        duration: 60,
+                        duration: 150,
                         useNativeDriver: true,
+                        delay: 0,
                     }).start(() => {
                         onClose();
                     });
                 } else if (endValue < middle - height * 0.02) {
-                    Animated.spring(translateY, {
+                    Animated.timing(translateY, {
                         toValue: SNAP_POINTS[0],
+                        duration: 150,
                         useNativeDriver: true,
+                        delay: 0,
                     }).start();
                 } else {
-                    Animated.spring(translateY, {
+                    Animated.timing(translateY, {
                         toValue: middle,
+                        duration: 150,
                         useNativeDriver: true,
+                        delay: 0,
                     }).start();
                 }
             },
@@ -126,20 +104,24 @@ export default function BottomSheet({
         );
         return () => backHandler.remove();
     }, [visible]);
-
     useEffect(() => {
         if (visible) {
-            Animated.parallel([
-                Animated.spring(translateY, {
-                    toValue: SNAP_POINTS[1], // يفتح في النص أول ما يظهر
-                    useNativeDriver: true,
-                }),
-            ]).start();
-            setSheetHeight(height + 32);
+            Animated.timing(translateY, {
+                toValue: SNAP_POINTS[1],
+                duration: 150,
+                useNativeDriver: true,
+            }).start();
+
+            setSheetHeight(height);
+
         } else {
-            handleColor.setValue(0);
-            setSheetHeight(height / 2);
             translateY.setValue(SNAP_POINTS[2]);
+            Animated.timing(translateY, {
+                toValue: SNAP_POINTS[2],
+                duration: 150,
+                useNativeDriver: true,
+                delay: 0,
+            }).start();
         }
     }, [visible]);
 
@@ -148,16 +130,28 @@ export default function BottomSheet({
 
     return (
         <>
-            {/* الخلفية */}
-            <TouchableWithoutFeedback>
+            <TouchableWithoutFeedback onPress={() => {
+                Animated.timing(translateY, {
+                    toValue: SNAP_POINTS[2],
+                    duration: 150,
+                    useNativeDriver: true,
+                }).start(() => onClose());
+            }}>
                 <Animated.View
-                    className="absolute top-0 left-0 right-0 bottom-0 bg-black/30"
+                    style={{
+                        position: "absolute",
+                        top: 0,
+                        flex: 1,
+                        width: "100%",
+                        height: height,
+                        backgroundColor: "rgba(0,0,0,.6)"
+                    }}
                 />
             </TouchableWithoutFeedback>
 
-            {/* الـ BottomSheet */}
             <Animated.View
                 style={{
+                    zIndex: 999999,
                     height: SheetHeight,
                     transform: [{ translateY }],
                     borderTopLeftRadius: radius,
@@ -165,7 +159,6 @@ export default function BottomSheet({
                 }}
                 className={`absolute top-0 w-full bg-white shadow-3xl self-center overflow-hidden`}
             >
-                {/* المقبض */}
                 <View
                     className="w-full min-h-[38px] flex items-center justify-center flex-row"
 
@@ -173,16 +166,17 @@ export default function BottomSheet({
                 >
                     <Animated.View
                         style={{
-                            width: 96,
-                            height: 4,
+                            width: 58,
+                            height: 2.5,
                             borderRadius: 12,
                             backgroundColor: "rgba(0,0,0,0.125)",
                         }}
                     />
                 </View>
 
-                {/* المحتوى */}
-                <View className="w-full" style={{ height: height - 32 }}>{children}</View>
+                <View style={{ width: "100%" }}>
+                    <View style={{ height: height, paddingBottom: 48 }}>{children}</View>
+                </View>
             </Animated.View>
         </>
     );

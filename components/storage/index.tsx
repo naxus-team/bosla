@@ -1,43 +1,32 @@
-// data/index.ts
-import { MMKV } from 'react-native-mmkv';
+import { MMKV } from "react-native-mmkv";
 
 export const storage = new MMKV();
 
-// Set Data
-export function setData(key: string, value: any): void {
-  try {
-    const jsonValue = JSON.stringify(value);
-    storage.set(key, jsonValue);
-  } catch (e) {
-    console.error("Error saving data", e);
-  }
+export async function setData<T>(key: string, value: T): Promise<void> {
+  const jsonValue = JSON.stringify(value);
+  storage.set(key, jsonValue);
 }
 
-// Get Data
-export function getData<T = any>(key: string): T | null {
-  try {
-    const jsonValue = storage.getString(key);
-    return jsonValue != null ? JSON.parse(jsonValue) : null;
-  } catch (e) {
-    console.error("Error reading data", e);
-    return null;
-  }
+export async function getData<T>(key: string): Promise<T | null> {
+  const jsonValue = storage.getString(key);
+  return jsonValue ? (JSON.parse(jsonValue) as T) : null;
 }
 
-// Remove Cache
-export function removeData(key: string): void {
-  try {
-    storage.delete(key);
-  } catch (e) {
-    console.error("Error removing data", e);
-  }
+// export async function removeData(key: string): Promise<void> {
+//   storage.delete(key);
+// }
+
+export async function updateData<T extends object>(key: string, partialValue: Partial<T>): Promise<T> {
+  const existing = (await getData<T>(key)) || ({} as T);
+  const updated = { ...existing, ...partialValue };
+  await setData(key, updated);
+  return updated;
 }
 
-// Remove Data
-export function clearAll(): void {
-  try {
-    storage.clearAll();
-  } catch (e) {
-    console.error("Error clearing storage", e);
-  }
+export async function hasData(key: string): Promise<boolean> {
+  return storage.contains(key);
 }
+
+// export async function clearAll(): Promise<void> {
+//   storage.clearAll();
+// }

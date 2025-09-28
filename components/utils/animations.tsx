@@ -59,3 +59,36 @@ export const slideDown = (translateY: number, options?: Options) => {
             : withTiming(0, { duration: options?.duration ?? 300 }),
     };
 };
+
+export const slideLeft = (translateX: number, options?: Options) => {
+    return {
+        transform: [
+            {
+                translateX: withSpring(-translateX, {
+                    damping: options?.damping ?? 15,
+                    stiffness: options?.stiffness ?? 120,
+                }),
+            },
+        ],
+        opacity: options?.delay
+            ? withDelay(options.delay, withTiming(1, { duration: options.duration ?? 300 }))
+            : withTiming(1, { duration: options?.duration ?? 300 }),
+    };
+};
+
+/** Slide Right */
+export const slideRight = (translateX: number, options?: Options) => {
+    return {
+        transform: [
+            {
+                translateX: withSpring(translateX, {
+                    damping: options?.damping ?? 15,
+                    stiffness: options?.stiffness ?? 120,
+                }),
+            },
+        ],
+        opacity: options?.delay
+            ? withDelay(options.delay, withTiming(1, { duration: options.duration ?? 300 }))
+            : withTiming(0, { duration: options?.duration ?? 300 }),
+    };
+};
