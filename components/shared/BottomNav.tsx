@@ -26,9 +26,11 @@ import {
     Squares2X2Icon as SquaresSolid,
 } from "react-native-heroicons/solid";
 
-import { t, getLang } from "../../locales";
-import { Fonts } from "../utils/font";
+import { useLanguage } from "../../locales";
+import { useFonts } from "../utils/font";
 import { Btn } from "../reusable";
+import { colors as color } from "../../theme/colors";
+
 
 type StepType = "services" | "contacts" | "account";
 
@@ -38,7 +40,8 @@ type BottomNavProps = {
 };
 
 export default function BottomNav({ control, activeTab }: BottomNavProps) {
-    const isArabic = getLang().startsWith("ar");
+    const { lang, t } = useLanguage();
+    const isArabic = lang.startsWith("ar");
     const fontBold = isArabic ? "NotoSansArabic-Bold" : "NotoSans-Bold";
     const fontSemi = isArabic ? "NotoSansArabic-SemiBold" : "NotoSans-SemiBold";
 
@@ -58,10 +61,8 @@ export default function BottomNav({ control, activeTab }: BottomNavProps) {
     useEffect(() => {
         tabs.forEach(tab => {
             if (tab.id === activeTab) {
-                // الزر الجديد يبدأ أنيميشنه
                 progresses[tab.id].value = withTiming(1, { duration: 100 });
             } else {
-                // كل الأزرار الأخرى ترجع فورًا
                 progresses[tab.id].value = 0;
             }
         });
@@ -69,82 +70,18 @@ export default function BottomNav({ control, activeTab }: BottomNavProps) {
 
     return (
         <View style={styles.container}>
-            {/* <View style={{ position: "absolute", top: -149, width: "100%", height: 148, backgroundColor: "rgba(255,255,255,1)", paddingVertical: 16, flexDirection: "row", paddingHorizontal: 32, gap: 32 }}>
-                <Image
-                    source={{ uri: "https://media.licdn.com/dms/image/v2/D5603AQEnCHBbXlPbtA/profile-displayphoto-shrink_800_800/B56ZRI9QrjGQAc-/0/1736390808114?e=1761177600&v=beta&t=imPPKSTFzNnQBJjTb_ZlkdGJJizFlf9S33Eh2q-BqZ8" }}
-                    style={
-                        {
-                            width: 62,
-                            height: 62,
-                            borderRadius: 100, // يجعلها دائرية
 
-                        }
-                    }
-                />
-                <View style={{ gap: 8 }}>
-                    <View>
-                        <Text style={[styles.aLabel, { fontFamily: Fonts["bold"] }]}>
-                            محمد
-                        </Text>
-                        <Text style={[styles.bLabel, { fontFamily: Fonts["medium"] }]}>
-                            أرسل إليك دعوة للتنقل معه
-                        </Text>
-                    </View>
-                    <View style={{ flexDirection: "row", gap: 8 }}>
-                        <Btn
-                            label={`الموافقة`}
-                            style={{
-                                background: "rgba(0,0,0,0.1)",
-                                pressedBackground: "rgba(0,0,0,0.2)",
-                                colorText: "#000",
-                                fontSize: 14,
-                                lineHeight: 14,
-                                radius: 32,
-                                height: 38,
-                                padding: { horizontal: 16 },
-                                fontWeight: "bold",
-                                animationSpeed: 100,
-                                fullWidth: false,
-                                animationType: "default",
-                                shadow: false,
-
-                            }}
-                            onPress={() =>vibrate(60)}
-                        />
-                        <Btn
-                            label={`الرفض`}
-                            style={{
-                                background: "#EE0F38",
-                                pressedBackground: "#EE0F38",
-                                colorText: "#fff",
-                                fontSize: 14,
-                                lineHeight: 14,
-                                radius: 32,
-                                height: 38,
-                                padding: { horizontal: 16 },
-                                fontWeight: "bold",
-                                animationSpeed: 100,
-                                fullWidth: false,
-                                animationType: "default",
-                                shadow: false,
-
-                            }}
-                            onPress={() =>vibrate(60)}
-                        />
-                    </View>
-                </View>
-            </View> */}
             {tabs.map(tab => {
                 const progress = progresses[tab.id];
 
                 const animatedBg = useAnimatedStyle(() => ({
                     width: 32 + 32 * progress.value,
-                    backgroundColor: interpolateColor(progress.value, [0, 0.5], ["transparent", "#f6f6f6"]),
+                    backgroundColor: interpolateColor(progress.value, [0, 0.5], [color.white[0], color.forceground]),
                     borderRadius: interpolate(progress.value, [0, 24], [24, 0])
                 }));
 
                 const animatedLabel = useAnimatedStyle(() => ({
-                    color: interpolateColor(progress.value, [0, 0.5], ["rgba(0,0,0,0.4)", "rgba(0,0,0,0.8)"]),
+                    color: interpolateColor(progress.value, [0, 0.5], [color.black[4], color.black[6]]),
                 }));
 
                 const isActive = activeTab === tab.id;
@@ -160,7 +97,7 @@ export default function BottomNav({ control, activeTab }: BottomNavProps) {
                             <Icon
                                 size={24}
                                 strokeWidth={isActive ? 0 : 2}
-                                color={isActive ? "rgba(0,0,0,0.8)" : "rgba(0,0,0,0.6)"}
+                                color={!isActive ? color.black[6] : color.black[8]}
                             />
                         </Animated.View>
                         <Animated.Text
@@ -181,14 +118,16 @@ export default function BottomNav({ control, activeTab }: BottomNavProps) {
 
 const styles = StyleSheet.create({
     container: {
+        position: "absolute",
+        bottom: 0,
         flexDirection: "row",
         justifyContent: "space-around",
         alignItems: "center",
         width: "100%",
         height: 82,
         backgroundColor: "white",
-        borderTopWidth: StyleSheet.hairlineWidth,
-        borderTopColor: "rgba(0,0,0,0.1)",
+        borderTopWidth: 1,
+        borderTopColor: color.forceground,
     },
     PressableNav: {
         alignItems: "center",

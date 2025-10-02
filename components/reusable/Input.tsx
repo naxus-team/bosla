@@ -13,7 +13,7 @@ import Animated, {
     withTiming,
 } from "react-native-reanimated";
 
-import { getLang } from "../../locales";
+import { useLanguage } from "../../locales";
 
 type InputProps = {
     iconContent?: React.ReactNode;
@@ -40,6 +40,7 @@ export default function Input({
     pressableContent,
     onPressablePress,
 }: InputProps) {
+    const { lang } = useLanguage();
     const [focused, setFocused] = useState(false);
 
     // الحالة: لو في value أو focused
@@ -99,7 +100,7 @@ export default function Input({
                     style={[
                         animatedLabelStyle,
                         {
-                            fontFamily: getLang().startsWith("ar")
+                            fontFamily: lang.startsWith("ar")
                                 ? "NotoSansArabic-Regular"
                                 : "NotoSans-Regular",
                         },
@@ -115,7 +116,7 @@ export default function Input({
                     className="w-full placeholder:text-transparent"
                     style={{
                         marginTop: 16,
-                        fontFamily: getLang().startsWith("ar")
+                        fontFamily: lang.startsWith("ar")
                             ? "NotoSansArabic-SemiBold"
                             : "NotoSans-SemiBold",
                         fontSize: 18,
@@ -132,7 +133,6 @@ export default function Input({
                     keyboardType={keyboardType}
                     secureTextEntry={secureTextEntry}
                     maxLength={maxLength}
-                    textAlign="right"
                     onFocus={() => setFocused(true)}
                     onBlur={() => setFocused(false)}
                     onSubmitEditing={(e) => {

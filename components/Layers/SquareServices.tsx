@@ -8,30 +8,37 @@ import Animated, {
     interpolateColor,
     interpolate,
 } from "react-native-reanimated";
-import { t, getLang } from "../../locales";
+import { useLanguage } from "../../locales";
 import { Btn } from "../reusable";
 import { Bars3Icon, BellIcon, DocumentTextIcon, ChevronLeftIcon, MagnifyingGlassIcon } from "react-native-heroicons/outline";
-import { Fonts } from "../utils/font";
+import { useFonts } from "../utils/font";
 import LinearGradient from "react-native-linear-gradient";
 import Logo from "../utils/Logo"
 import { vibrate } from "../hook/vibrations";
+import { colors } from "../../theme/colors";
+
 type SquareServices = {
     slideOpen: (status: boolean, typeSlide: string) => void
 }
+const { width, height } = Dimensions.get("window");
 
 export default function SquareServices({ slideOpen }: SquareServices) {
-    const isArabic = getLang().startsWith("ar");
+    const { lang, t } = useLanguage();
+    const fonts = useFonts();
+    const insets = useSafeAreaInsets();
+    const isArabic = lang.startsWith("ar");
     const fontBold = isArabic ? "NotoSansArabic-Bold" : "NotoSans-Bold";
     const fontSemiBold = isArabic ? "NotoSansArabic-SemiBold" : "NotoSans-SemiBold";
     const [color, setColor] = useState("rgba(255,255,255,1)");
 
     const services = [
         { title: "تنقل", subtitle: "أطلب سائق للتنقل", iconLabel: "Drive" },
+
     ];
 
 
     return (
-        <View style={styles.Container}>
+        <View style={[styles.Container]}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", padding: 4, paddingHorizontal: 16 }}>
 
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
@@ -39,7 +46,7 @@ export default function SquareServices({ slideOpen }: SquareServices) {
                         color: "rgba(283,15,56,1)",
                         fontSize: 30,
                         lineHeight: 45,
-                        fontFamily: Fonts["medium"]
+                        fontFamily: fonts.medium
                     }}>
                         {t("app.name")}
                     </Text>
@@ -47,9 +54,8 @@ export default function SquareServices({ slideOpen }: SquareServices) {
                 <View style={{ flexDirection: "row", gap: 8 }}>
                     <Btn
                         style={{
-                            background: "#fff",
-                            pressedBackground: "#eaeaea",
-                            colorText: "#000",
+                            background: colors.forceground,
+                            pressedBackground: colors.black.hex[1],
                             radius: 16,
                             height: 48,
                             width: 48,
@@ -62,15 +68,14 @@ export default function SquareServices({ slideOpen }: SquareServices) {
                         }}
                         onPress={() => { vibrate(60); slideOpen(true, "notifications") }}
                         customize={
-                            <BellIcon color={"rgba(0,0,0,0.8)"} size={24} strokeWidth={2} />
+                            <BellIcon color={colors.black.hex[8]} size={24} strokeWidth={2} />
                         }
 
                     />
                     <Btn
                         style={{
-                            background: "#fff",
-                            pressedBackground: "#eaeaea",
-                            colorText: "#000",
+                            background: colors.forceground,
+                            pressedBackground: colors.black.hex[1],
                             radius: 16,
                             height: 48,
                             width: 48,
@@ -83,58 +88,49 @@ export default function SquareServices({ slideOpen }: SquareServices) {
                         }}
                         onPress={() => vibrate(60)}
                         customize={
-                            <MagnifyingGlassIcon color={"rgba(0,0,0,0.8)"} size={24} strokeWidth={2} />
+                            <MagnifyingGlassIcon color={colors.black.hex[8]} size={24} strokeWidth={2} />
                         }
 
                     />
                 </View>
             </View>
             <View style={[styles.cardSquare, { backgroundColor: color }]}>
-                <View
-                    className=" min-h-[32px] flex items-center justify-center"
-                >
-                    <Animated.View
-                        style={{
-                            width: 48,
-                            height: 4,
-                            borderRadius: 12,
-                            backgroundColor: "rgba(0,0,0,0.125)",
-                        }}
-                    />
-                </View>
-                <View style={{ flexDirection: "column", paddingHorizontal: 8, gap: 16 }}>
-                    {services.map((service, index) => (
-                        <Btn
-                            key={index}
-                            label=""
-                            style={{
-                                background: "#f6f6f6",
-                                pressedBackground: "#fefefe",
-                                radius: 24,
-                                height: 250,
-                                animationSpeed: 100,
-                                fullWidth: false,
-                                shadow: false,
-                                elevation: 0,
-                                padding: { vertical: 4 },
-                            }}
-                            customize={
-                                <View style={styles.row}>
-                                    <View style={styles.leftRow}>
-                                        <View style={styles.texts}>
-                                            <Text style={styles.title}>{service.title}</Text>
-                                            <Text style={styles.subtitle}>{service.subtitle}</Text>
+                <View style={{ flexDirection: "column", borderRadius: 24, borderColor: colors.black.hex[1], borderWidth: 2, overflow: "hidden" }}>
+                    {services.map((service, index, arr) => (
+                        <>
+                            <Btn
+                                key={index}
+                                label=""
+                                style={{
+                                    background: colors.white[10],
+                                    pressedBackground: colors.black.hex[1],
+                                    radius: 0,
+                                    height: 128,
+                                    animationSpeed: 100,
+                                    fullWidth: false,
+                                    shadow: false,
+                                    elevation: 0,
+                                    padding: { vertical: 4 },
+                                }}
+                                customize={
+                                    <View style={styles.row}>
+                                        <View style={styles.leftRow}>
+                                            <View style={styles.texts}>
+                                                <Text style={[styles.title, { fontFamily: fonts.semibold, }]}>{[service.title]}</Text>
+                                                <Text style={[styles.subtitle, { fontFamily: fonts.medium }]}>{service.subtitle}</Text>
+                                            </View>
                                         </View>
-                                    </View>
 
-                                    <ChevronLeftIcon color={"rgba(0,0,0,1)"} size={28} strokeWidth={2} />
-                                </View>
-                            }
-                            onPress={() => {
-                                vibrate(60);
-                                slideOpen(true, "map");
-                            }}
-                        />
+                                        <ChevronLeftIcon color={"rgba(0,0,0,1)"} size={28} strokeWidth={2} />
+                                    </View>
+                                }
+                                onPress={() => {
+                                    vibrate(60);
+                                    slideOpen(true, "map");
+                                }}
+                            />
+                            {index + 1 && <View style={{ height: 2, backgroundColor: colors.forceground, width: "100%" }} />}
+                        </>
                     ))}
                 </View>
 
@@ -146,13 +142,16 @@ export default function SquareServices({ slideOpen }: SquareServices) {
 
 const styles = StyleSheet.create({
     Container: {
+        top: 0,
         width: "100%",
+        height: height - 82,
         gap: 8
     },
     cardSquare: {
         width: "100%",
         height: "100%",
-        padding: 8,
+        padding: 16,
+        paddingTop: 0,
         borderRadius: 24
     },
     row: {
@@ -180,21 +179,19 @@ const styles = StyleSheet.create({
         color: "#fff",
         fontSize: 18,
         lineHeight: 24,
-        fontFamily: Fonts["semibold"]
     },
     texts: {
+        paddingHorizontal: 8,
         gap: 4,
     },
     title: {
-        fontSize: 20,
-        lineHeight: 32,
-        fontFamily: Fonts["semibold"],
+        fontSize: 24,
+        lineHeight: 36,
         color: "rgba(0,0,0,1)"
     },
     subtitle: {
         fontSize: 16,
         lineHeight: 28,
-        fontFamily: Fonts["medium"],
         color: "rgba(0,0,0,1)"
     },
 });

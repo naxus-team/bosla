@@ -1,11 +1,14 @@
-import { getLang } from "../../locales";
+import { useLanguage } from "../../locales";
 
-const isArabic = getLang() === "ar_gl";
+export const useFonts = () => {
+    const { lang } = useLanguage();
+    const isArabic = lang === "ar_gl";
 
-export const Fonts = {
-    regular: isArabic ? "NotoSansArabic-Regular" : "NotoSans-Regular",
-    medium: isArabic ? "NotoSansArabic-Medium" : "NotoSans-Medium",
-    semibold: isArabic ? "NotoSansArabic-SemiBold" : "NotoSans-SemiBold",
-    bold: isArabic ? "NotoSansArabic-Bold" : "NotoSans-Bold",
-    light: isArabic ? "NotoSansArabic-Light" : "NotoSans-Light",
+    return {
+        regular: isArabic ? "NotoSansArabic-Regular" : "NotoSans-Regular",
+        medium: isArabic ? "NotoSansArabic-Medium" : "NotoSans-Medium",
+        semibold: isArabic ? "NotoSansArabic-SemiBold" : "NotoSans-SemiBold",
+        bold: isArabic ? "NotoSansArabic-Bold" : "NotoSans-Bold",
+        light: isArabic ? "NotoSansArabic-Light" : "NotoSans-Light",
+    };
 };

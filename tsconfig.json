@@ -11,11 +11,12 @@
     "**/Pods"
   ],
   "compilerOptions": {
-    "jsx": "react-jsx",
+    "jsx": "react-native",
     "allowJs": true,
     "checkJs": false,
     "types": [
-      "react"
+      "react",
+      "react-native"
     ]
   }
 }

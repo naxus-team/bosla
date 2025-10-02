@@ -1,7 +1,7 @@
 import React from "react";
 import { View, TouchableOpacity, Animated, StyleSheet, Easing, Pressable } from "react-native";
 
-type VerticalSwitchProps = {
+type SwitchProps = {
     value: boolean;
     onChange?: (val: boolean) => void;
     width?: number;
@@ -13,7 +13,7 @@ type VerticalSwitchProps = {
     bottomIcon?: React.ReactNode;
 };
 
-export const VerticalSwitch: React.FC<VerticalSwitchProps> = ({
+const Switch: React.FC<SwitchProps> = ({
     value,
     onChange,
     width = 40,
@@ -40,8 +40,6 @@ export const VerticalSwitch: React.FC<VerticalSwitchProps> = ({
         <Pressable
             style={[styles.track, { width, height, backgroundColor: value ? activeColor : inactiveColor }]}
         >
-            {topIcon && <View style={styles.iconTop}>{topIcon}</View>}
-            {bottomIcon && <View style={styles.iconBottom}>{bottomIcon}</View>}
             <Animated.View
                 style={[
                     styles.thumb,
@@ -50,9 +48,13 @@ export const VerticalSwitch: React.FC<VerticalSwitchProps> = ({
                         height: thumbSize,
                         borderRadius: thumbSize / 2,
                         transform: [{ translateY }],
+                        alignItems: "center",
+                        justifyContent: "center"
                     },
                 ]}
-            />
+            >
+                {value ? <View>{topIcon}</View> : <View >{bottomIcon}</View>}
+            </Animated.View>
         </Pressable>
     );
 };
@@ -83,3 +85,4 @@ const styles = StyleSheet.create({
         alignSelf: "center",
     },
 });
+export default Switch;

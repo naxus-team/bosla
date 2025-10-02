@@ -12,7 +12,7 @@ import Animated, {
     useAnimatedStyle,
     withTiming,
 } from "react-native-reanimated";
-import { getLang } from "../../locales";
+import { useLanguage } from "../../locales";
 
 import CountryFlag from "../utils/countryFlag";
 import * as Ico from "lucide-react-native";
@@ -34,6 +34,8 @@ export default function Dropdown({
     data,
     style,
 }: DropdownProps) {
+    const { lang } = useLanguage();
+
     const [focused, setFocused] = useState(false);
 
     const isActive = !!value || focused;
@@ -75,7 +77,7 @@ export default function Dropdown({
                     style={[
                         animatedLabelStyle,
                         {
-                            fontFamily: getLang().startsWith("ar")
+                            fontFamily: lang.startsWith("ar")
                                 ? "NotoSansArabic-Regular"
                                 : "NotoSans-Regular",
                         },
@@ -98,7 +100,7 @@ export default function Dropdown({
                             style={{
                                 flex: 1,
                                 alignItems: "flex-start",
-                                fontFamily: getLang().startsWith("ar") ? "NotoSansArabic-SemiBold" : "NotoSans-SemiBold",
+                                fontFamily: lang.startsWith("ar") ? "NotoSansArabic-SemiBold" : "NotoSans-SemiBold",
                                 fontSize: 18,
                                 lineHeight: 28,
                                 color: "#000"

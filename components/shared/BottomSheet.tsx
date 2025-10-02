@@ -2,6 +2,8 @@ import React, { useRef, useEffect, useState } from "react";
 import { Pressable, BackHandler, Animated, PanResponder, Dimensions, Easing } from "react-native";
 import { View, TouchableWithoutFeedback } from "react-native";
 import SkeletonList from "../utils/SkeletonStack";
+import LinearGradient from "react-native-linear-gradient";
+import { colors as color } from "../../theme/colors";
 
 const { height } = Dimensions.get("window");
 
@@ -12,21 +14,42 @@ const SNAP_POINTS = [
     height,   // 👇 تحت خالص (مخفي تقريباً)
 ];
 
+type enabledProps = {
+    panHandler: boolean;
+}
+
+type sizeProps = {
+    height: number;
+}
+
 type BottomSheetProps = {
     children: React.ReactNode;
     visible: boolean;
     onClose: () => void;
     height?: number;
+    enabled?: enabledProps;
+    size?: sizeProps;
 };
 
 export default function BottomSheet({
     children,
     visible,
     onClose,
+    enabled = { panHandler: true },
+    size
 }: BottomSheetProps) {
     const translateY = useRef(new Animated.Value(height)).current;
     const [SheetHeight, setSheetHeight] = useState(height);
     const handleColor = useRef(new Animated.Value(0)).current;
+    const [snapPoints, setSnapPoints] = useState(SNAP_POINTS);
+
+    useEffect(() => {
+        if (typeof size?.height === "number") {
+            setSheetHeight(size.height);
+        } else {
+            setSheetHeight(height);
+        }
+    }, [size?.height]);
 
     const radius = translateY.interpolate({
         inputRange: [SNAP_POINTS[0], SNAP_POINTS[1], SNAP_POINTS[2]],
@@ -41,7 +64,7 @@ export default function BottomSheet({
                 Math.abs(gestureState.dy) > 2,
 
             onPanResponderGrant: () => {
-                if (SheetHeight === height / 2) setSheetHeight(height);
+                if (SheetHeight === SheetHeight) setSheetHeight(SheetHeight);
             },
 
             onPanResponderMove: (_, gestureState) => {
@@ -57,7 +80,7 @@ export default function BottomSheet({
 
             onPanResponderRelease: (_, gestureState) => {
                 const endValue = gestureState.moveY;
-                const middle = height / 2;
+                const middle = SheetHeight;
                 const downThreshold = middle + height * 0.2;
                 const upThreshold = middle - height * 0.2;
 
@@ -103,11 +126,12 @@ export default function BottomSheet({
             backAction
         );
         return () => backHandler.remove();
-    }, [visible]);
+    }, [visible, onClose]);
+
     useEffect(() => {
         if (visible) {
             Animated.timing(translateY, {
-                toValue: SNAP_POINTS[1],
+                toValue: (size?.height ? height - size.height : height / 2),
                 duration: 150,
                 useNativeDriver: true,
             }).start();
@@ -123,20 +147,24 @@ export default function BottomSheet({
                 delay: 0,
             }).start();
         }
-    }, [visible]);
+    }, [size?.height, visible]);
 
 
     if (!visible) return null;
 
     return (
         <>
-            <TouchableWithoutFeedback onPress={() => {
-                Animated.timing(translateY, {
-                    toValue: SNAP_POINTS[2],
-                    duration: 150,
-                    useNativeDriver: true,
-                }).start(() => onClose());
-            }}>
+            <TouchableWithoutFeedback
+                onPress={() => {
+                    Animated.timing(translateY, {
+                        toValue: snapPoints[2],
+                        duration: 150,
+                        useNativeDriver: true,
+                    }).start(() => onClose());
+                }}
+                accessible={false}
+            >
+
                 <Animated.View
                     style={{
                         position: "absolute",
@@ -144,9 +172,10 @@ export default function BottomSheet({
                         flex: 1,
                         width: "100%",
                         height: height,
-                        backgroundColor: "rgba(0,0,0,.6)"
                     }}
                 />
+
+
             </TouchableWithoutFeedback>
 
             <Animated.View
@@ -156,23 +185,28 @@ export default function BottomSheet({
                     transform: [{ translateY }],
                     borderTopLeftRadius: radius,
                     borderTopRightRadius: radius,
+                    backgroundColor: color.forceground,
+                    paddingHorizontal: 16,
                 }}
-                className={`absolute top-0 w-full bg-white shadow-3xl self-center overflow-hidden`}
+                className={`absolute top-0 w-full shadow-3xl self-center overflow-hidden`}
             >
-                <View
-                    className="w-full min-h-[38px] flex items-center justify-center flex-row"
 
-                    {...panResponder.panHandlers}
-                >
-                    <Animated.View
-                        style={{
-                            width: 58,
-                            height: 2.5,
-                            borderRadius: 12,
-                            backgroundColor: "rgba(0,0,0,0.125)",
-                        }}
-                    />
-                </View>
+                {enabled.panHandler &&
+                    <View
+                        className="w-full min-h-[38px] flex items-center justify-center flex-row"
+
+                        {...panResponder.panHandlers}
+                    >
+                        <Animated.View
+                            style={{
+                                width: 58,
+                                height: 2.5,
+                                borderRadius: 12,
+                                backgroundColor: "rgba(0,0,0,0.125)",
+                            }}
+                        />
+                    </View>
+                }
 
                 <View style={{ width: "100%" }}>
                     <View style={{ height: height, paddingBottom: 48 }}>{children}</View>

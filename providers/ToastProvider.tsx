@@ -1,8 +1,7 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, { createContext, useContext, useState, ReactNode, use } from "react";
 import { Animated, StyleSheet, Text, View, Dimensions } from "react-native";
 import { BlurView } from "@react-native-community/blur";
-import { Fonts } from "../components/utils/font";
-
+import { useFonts } from "../components/utils/font";
 type ToastType = "success" | "error" | "info";
 const { width } = Dimensions.get("window");
 
@@ -60,6 +59,7 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
 };
 
 const ToastItem = ({ message, type }: { message: string; type: ToastType }) => {
+    const fonts = useFonts();
     const [opacity] = useState(new Animated.Value(0));
 
     React.useEffect(() => {
@@ -73,7 +73,7 @@ const ToastItem = ({ message, type }: { message: string; type: ToastType }) => {
 
     return (
         <Animated.View style={[styles.toast, { backgroundColor: background, opacity }]}>
-            <Text style={styles.text}>{message}</Text>
+            <Text style={[styles.text, { fontFamily: fonts.medium }]}>{message}</Text>
         </Animated.View>
     );
 };
@@ -100,6 +100,5 @@ const styles = StyleSheet.create({
         fontSize: 14,
         lineHeight: 20,
         textAlign: "center",
-        fontFamily: Fonts["medium"]
     },
 });

@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { View, Text, StyleSheet, Animated, PanResponder, Vibration } from "react-native";
 import { ArrowLeftIcon, ArrowRightIcon, ChevronLeftIcon } from "react-native-heroicons/outline";
-import { getLang } from "../../locales";
+import { useLanguage } from "../../locales";
 
 interface SwipeCircleProps {
     width: number;
@@ -10,11 +10,11 @@ interface SwipeCircleProps {
 }
 
 export default function SwipeCircle({ width, onSwipeComplete, label }: SwipeCircleProps) {
+    const { lang } = useLanguage();
     const handleWidth = 60;
     const maxTranslate = width - handleWidth;
-
-    const lang = getLang();
-    const isRTL = lang === "ar_gl";
+    const getLang = lang;
+    const isRTL = getLang === "ar_gl";
     const fontBold = isRTL ? "NotoSansArabic-Bold" : "NotoSans-Bold";
     const fontSemiBold = isRTL ? "NotoSansArabic-SemiBold" : "NotoSans-SemiBold";
     const initialX = 0;

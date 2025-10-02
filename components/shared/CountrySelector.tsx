@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { View, Text, FlatList, Pressable, ActivityIndicator, NativeSyntheticEvent, NativeScrollEvent, Animated } from "react-native";
 import CountryFlag from "../utils/countryFlag";
-import { getLang } from "../../locales";
+import { useLanguage } from "../../locales";
 
 import { useCountries } from "../../providers/CountriesProvider";
 export type CountryData = {
@@ -17,6 +17,7 @@ type Props = {
 
 export default function CountrySelector({ onSelect, onScrollProgress }: Props) {
     Animated
+    const { lang, t } = useLanguage();
     const { countries, loading, currentCountry } = useCountries();
     const shadowAnim = useRef(new Animated.Value(0)).current;
 
@@ -53,6 +54,18 @@ export default function CountrySelector({ onSelect, onScrollProgress }: Props) {
                 style={{ padding: 8 }}
                 onScroll={handleScroll}
                 scrollEventThrottle={16}
+                initialNumToRender={5}
+                maxToRenderPerBatch={5}
+                removeClippedSubviews={true}
+                showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
+                decelerationRate="normal"
+                overScrollMode="never"
+                getItemLayout={(_, index) => ({
+                    length: 90,
+                    offset: 90 * index,
+                    index,
+                })}
                 keyExtractor={(item) => item.code}
                 renderItem={({ item }) => (
                     <Pressable
@@ -61,9 +74,9 @@ export default function CountrySelector({ onSelect, onScrollProgress }: Props) {
                     >
                         <View className="flex-row items-center gap-4">
                             <CountryFlag code={item.flagCode.toUpperCase() || ""} size={20} />
-                            <Text style={{ fontFamily: getLang().startsWith("ar") ? "NotoSansArabic-SemiBold" : "NotoSans-SemiBold" }} className="text-lg text-black">{item.name}</Text>
+                            <Text style={{ fontFamily: lang.startsWith("ar") ? "NotoSansArabic-SemiBold" : "NotoSans-SemiBold" }} className="text-lg text-black">{item.name}</Text>
                         </View>
-                        <Text style={{ fontFamily: getLang().startsWith("ar") ? "NotoSansArabic-Regular" : "NotoSans-Regular" }} className="text-lg text-black/60">+{item.dial ?? "1"}</Text>
+                        <Text style={{ fontFamily: lang.startsWith("ar") ? "NotoSansArabic-Regular" : "NotoSans-Regular" }} className="text-lg text-black/60">+{item.dial ?? "1"}</Text>
                     </Pressable>
                 )}
             />

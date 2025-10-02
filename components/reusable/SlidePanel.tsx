@@ -1,11 +1,8 @@
 import React, { forwardRef, useImperativeHandle, useState, useRef } from "react";
-import { View, StyleSheet, Dimensions, Pressable, Vibration, Animated, Easing, Platform, StatusBar } from "react-native";
-import { Btn } from "../reusable";
-import { ArrowRightIcon } from "react-native-heroicons/outline";
-import { ArrowLeft, ArrowRight } from "lucide-react-native";
-import { useBackHandler } from "../hook/useBackHandler"
+import { View, StyleSheet, Dimensions, Animated, Easing, Platform, StatusBar } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { colors as color } from "../../theme/colors";
+import { useLanguage } from "../../locales";
 
 const statusBarHeight = Platform.OS === "ios" ? 20 : StatusBar.currentHeight;
 
@@ -21,7 +18,8 @@ type SlidePanelProps = {
 };
 
 const SlidePanel = forwardRef<SlidePanelHandle, SlidePanelProps>(({ children }, ref) => {
-    const translateX = useRef(new Animated.Value(-width)).current;
+    const { lang } = useLanguage();
+    const translateX = useRef(new Animated.Value(lang === "en_us" ? width : -width)).current;
     const overlayOpacity = useRef(new Animated.Value(0)).current;
     const [visible, setVisible] = useState(false);
     const insets = useSafeAreaInsets();
@@ -38,7 +36,7 @@ const SlidePanel = forwardRef<SlidePanelHandle, SlidePanelProps>(({ children }, 
         },
         close: () => {
             Animated.timing(translateX, {
-                toValue: -width,
+                toValue: lang === "en_us" ? width : -width,
                 duration: 200,
                 easing: Easing.inOut(Easing.ease),
                 useNativeDriver: true,

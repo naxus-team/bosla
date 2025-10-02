@@ -1,46 +1,63 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { getData, setData } from "../storage";
 
-type Settings = {
+// نوع بيانات الإعدادات
+export type AppSettings = {
     vibrationEnabled: boolean;
     notificationsEnabled: boolean;
     darkMode: boolean;
+    language: string; // العربية أو الإنجليزية أو أي لغة أخرى
 };
 
-type SettingsContextType = {
-    settings: Settings;
-    updateSettings: (newSettings: Partial<Settings>) => void;
+// مفتاح التخزين
+const StorageKeys = {
+    Settings: "settings",
 };
 
-const defaultSettings: Settings = {
+// إعدادات افتراضية
+const defaultSettings: AppSettings = {
     vibrationEnabled: true,
     notificationsEnabled: true,
     darkMode: false,
+    language: "ar",
 };
 
+type SettingsContextType = {
+    settings: AppSettings;
+    updateSettings: (newSettings: Partial<AppSettings>) => void;
+};
+
+// إنشاء الـ Context
 const SettingsContext = createContext<SettingsContextType>({
     settings: defaultSettings,
     updateSettings: () => { },
 });
 
-export const SettingsProvider = ({ children }: { children: React.ReactNode }) => {
-    const [settings, setSettings] = useState<Settings>(defaultSettings);
+// دالة لتهيئة الإعدادات الافتراضية إذا لم توجد
+async function initDefaultSettings(): Promise<AppSettings> {
+    const stored = await getData<AppSettings>(StorageKeys.Settings);
+    if (!stored) {
+        await setData(StorageKeys.Settings, defaultSettings);
+        return defaultSettings;
+    }
+    return { ...defaultSettings, ...stored };
+}
 
-    // تحميل الإعدادات من التخزين
+// Provider
+export const SettingsProvider = ({ children }: { children: React.ReactNode }) => {
+    const [settings, setSettings] = useState<AppSettings>(defaultSettings);
+
     useEffect(() => {
         (async () => {
-            const stored = await getData<Settings>("settings");
-            if (stored) {
-                setSettings({ ...defaultSettings, ...stored });
-            }
+            const initialSettings = await initDefaultSettings();
+            setSettings(initialSettings);
         })();
     }, []);
 
-    // تحديث الإعدادات
-    const updateSettings = (newSettings: Partial<Settings>) => {
+    const updateSettings = (newSettings: Partial<AppSettings>) => {
         const updated = { ...settings, ...newSettings };
         setSettings(updated);
-        setData("settings", updated);
+        setData(StorageKeys.Settings, updated);
     };
 
     return (

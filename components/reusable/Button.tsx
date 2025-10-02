@@ -1,4 +1,4 @@
-import { Text, StyleSheet, Pressable, ViewStyle } from "react-native";
+import { Text, StyleSheet, Pressable, ViewStyle, DimensionValue } from "react-native";
 import Animated, {
     useSharedValue,
     useAnimatedStyle,
@@ -7,7 +7,8 @@ import Animated, {
     interpolate
 } from "react-native-reanimated";
 import { fadeIn, fadeOut, slideUp, slideDown } from "../utils/animations";
-import { Fonts } from "../utils/font";
+import { useFonts } from "../utils/font";
+import { vibrate } from "../hook/vibrations";
 
 type Padding = number | {
     top?: number;
@@ -29,7 +30,7 @@ export type BtnStyle = {
     colorText?: string;
     radius?: number;
     height?: number;
-    width?: number;
+    width?: number | string;
     fullWidth?: boolean;
     animationSpeed?: number;
     fontSize?: number;
@@ -53,6 +54,7 @@ type BtnProps = {
 };
 
 export default function Btn({ label, style, onPress, customize, animScale = false }: BtnProps) {
+    const fonts = useFonts();
     const pressed = useSharedValue(0);
     const opacity = useSharedValue(1);
     const translateY = useSharedValue(0);
@@ -86,15 +88,20 @@ export default function Btn({ label, style, onPress, customize, animScale = fals
 
         const scale = interpolate(pressed.value, [0, 1], [1, 0.95]);
 
+        let width: DimensionValue | undefined;
+        if (style?.fullWidth) {
+            width = "100%";
+        } else if (typeof style?.width === "number" || typeof style?.width === "string") {
+            width = style.width as DimensionValue;
+        } else {
+            width = undefined;
+        }
+
         return {
             backgroundColor,
-            transform: [
-                animScale
-                    ? { scale: scale } // هتستخدم sharedValue
-                    : { scale: 1 },          // القيمة العادية
-            ],
-            height: style?.height ?? undefined,
-            width: style?.fullWidth ? "100%" : style?.width ?? undefined,
+            transform: [{ scale: animScale ? scale : 1 }],
+            height: style?.height,
+            width,
             borderRadius: style?.radius ?? 8,
         };
     });
@@ -124,24 +131,41 @@ export default function Btn({ label, style, onPress, customize, animScale = fals
                 pressed.value = withTiming(isPressIn ? 1 : 0, { duration: speed });
         }
     };
-
+    let timeoutId: number;
     return (
+
         <Pressable
             onPressIn={() => {
-                if (style?.animationType) {
-                    applyAnimation(style.animationType, true);
-                } else {
-                    pressed.value = withTiming(1, { duration: speed });
-                }
+                clearTimeout(timeoutId);
+                const delay = 200;
+                timeoutId = setTimeout(() => {
+                    if (style?.animationType) {
+                        applyAnimation(style.animationType, true);
+                    } else {
+                        pressed.value = withTiming(1, { duration: speed });
+                    }
+                }, delay);
             }}
             onPressOut={() => {
+                clearTimeout(timeoutId);
                 if (style?.animationType) {
                     applyAnimation(style.animationType, false);
                 } else {
                     pressed.value = withTiming(0, { duration: speed });
                 }
             }}
-            onPress={onPress}
+            onPress={() => {
+                clearTimeout(timeoutId);
+                if (style?.animationType) {
+                    applyAnimation(style.animationType, true);
+                    setTimeout(() => clearTimeout(timeoutId), 200);
+                } else {
+                    pressed.value = withTiming(1, { duration: 100 });
+                    setTimeout(() => pressed.value = withTiming(0, { duration: speed }), 200);
+                }
+                onPress?.();
+                vibrate(60)
+            }}
         >
             <Animated.View
                 style={[
@@ -169,7 +193,7 @@ export default function Btn({ label, style, onPress, customize, animScale = fals
                             color: style?.colorText || "#fff",
                             fontSize: style?.fontSize ?? 16,
                             lineHeight: style?.lineHeight ?? (style?.fontSize ? style.fontSize * 1.2 : 20),
-                            fontFamily: style?.fontFamily || Fonts[style?.fontWeight ?? "regular"],
+                            fontFamily: style?.fontFamily ? style?.fontFamily : fonts.regular,
                             textAlign: style?.textAlign ?? "center",
                             fontWeight: style?.fontWeight ? undefined : "500",
                         }}

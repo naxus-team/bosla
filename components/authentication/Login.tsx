@@ -16,67 +16,60 @@ import { Navigate } from "react-router-native";
 import { Menu, MenuOptions, MenuOption, MenuTrigger, MenuProvider } from "react-native-popup-menu";
 import * as Animatable from "react-native-animatable";
 import Animated from "react-native-reanimated";
-import { EnteringFromRight, ExitingToRight, EnteringFromLeft, ExitingToLeft } from "../animations";
-
-import { t, getLang } from "../../locales";
+import { useDirectionalAnimations } from "../animations";
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useLanguage } from "../../locales";
 import BottomSheet from "../shared/BottomSheet";
 import CountrySelector from "../shared/CountrySelector";
 import { countryCodeMap } from "../../locales/countryCodeMap";
 import { useAuth } from "../hook/useAuth";
 import { User, StorageKeys } from "../types";
 import uuid from "react-native-uuid";
-
 import { setData, getData } from "../storage";
 import { CountriesProvider, useCountries } from "../../providers/CountriesProvider";
 import { ArrowLeftIcon, MagnifyingGlassIcon } from "react-native-heroicons/outline";
 import { Input, Dropdown } from "../reusable";
-import { Fonts } from "../utils/font";
+import { useFonts } from "../utils/font";
 import { SmartphoneIcon } from "lucide-react-native";
 import { vibrate } from "../hook/vibrations";
-
 const { height } = Dimensions.get("window");
 
 export function AuthLogin() {
+  const { EnteringFromRight, ExitingToLeft, EnteringFromLeft, ExitingToRight } = useDirectionalAnimations();
+  const insets = useSafeAreaInsets();
+  const { lang, t } = useLanguage();
+  const fonts = useFonts();
   const [goDashboard, setGoDashboard] = useState(false);
   const { loading, authorized } = useAuth();
-
-
   const [isAnimating, setIsAnimating] = useState(false);
   const [number_phone, setValueNumberPhone] = useState("");
   const [searchNumber, setSearchNumber] = useState("");
-
   const [otp_code, setValueOtpCode] = useState("");
   const [showSheet, setShowSheet] = useState(false);
   const [countries, setCountries] = useState<[string, string][]>([]);
   const [countryCode, setCountryCode] = useState("eg");
-
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [SelectedCountry, setSelectedCountry] = useState("");
   const [SelectDial, setSelectDial] = useState("");
   const [step, setStep] = useState<"phone" | "otp">("phone");
   const [token, setToken] = useState<string | null>(null);
-
   useEffect(() => {
     const entries = Object.entries(countryCodeMap);
     setCountries(entries);
   }, []);
-
   useEffect(() => {
     const showSub = Keyboard.addListener("keyboardDidShow", () => setKeyboardVisible(true));
     const hideSub = Keyboard.addListener("keyboardDidHide", () => setKeyboardVisible(false));
-
     return () => {
       showSub.remove();
       hideSub.remove();
     };
   }, []);
-
   const goToStep = (newStep: "phone" | "otp") => {
     setIsAnimating(true);
     setStep(newStep);
     setTimeout(() => setIsAnimating(false), 300);
   };
-
   const handlePress = async () => {
     setData<string>(StorageKeys.Token, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...");
     const user: User = {
@@ -85,15 +78,16 @@ export function AuthLogin() {
       lastname: "ياسر",
       username: "ahmedyasser",
       email: "ahmedyaser@hotmail.com",
-      phone: "+201019785597",
+      dial: "+20",
+      phone: "1019785597",
       avatar: "https://scontent.fcai30-1.fna.fbcdn.net/v/t39.30808-6/552195197_1301750204741436_4684378411474012091_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=cn3Tb8PK1JcQ7kNvwGC2dy-&_nc_oc=Adl00It8JAFfHLna6ln3cHgZysyNz-RLTwuWpqdTBeWMFvFUhsLrvE6h7IyhKSzP8pQ&_nc_zt=23&_nc_ht=scontent.fcai30-1.fna&_nc_gid=AsCkkskeyXY27lvkmJav3A&oh=00_AfZpy7p74aeL0WuHSiksn7cXzvVewpa99pBHdxbTUXscSQ&oe=68DBF8CC",
       role: "user",
+      bio: "",
       verify: true,
       createdAt: new Date().toISOString(),
     };
     setData<User>(StorageKeys.User, user);
     setGoDashboard(true);
-    vibrate(60);
   };
 
   if (goDashboard || authorized) {
@@ -101,7 +95,11 @@ export function AuthLogin() {
   }
 
   return (
-    <View style={styles.safeArea} pointerEvents={isAnimating ? "none" : "auto"}>
+    <View style={[styles.safeArea, {
+      paddingTop: insets.top,
+      paddingBottom: insets.bottom,
+      direction: lang === "ar_gl" ? "rtl" : "ltr"
+    }]} pointerEvents={isAnimating ? "none" : "auto"}>
       <CountriesProvider>
         {step === "phone" && (
           <Animated.View key="phone" entering={EnteringFromRight} exiting={ExitingToRight}>
@@ -309,12 +307,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     lineHeight: 32,
-    fontFamily: Fonts["bold"],
     textAlign: "center",
     color: "#000",
   },
   subtitle: {
-    fontFamily: Fonts["regular"],
     fontSize: 18,
     lineHeight: 28,
     color: "rgba(0,0,0,0.6)",
@@ -328,7 +324,6 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   dialText: {
-    fontFamily: Fonts["medium"],
     fontSize: 18,
     color: "#000",
   },
@@ -357,17 +352,14 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     lineHeight: 24,
-    fontFamily: Fonts["medium"],
   },
   otpTitle: {
     fontSize: 20,
-    fontFamily: Fonts["medium"],
     textAlign: "center",
     color: "#000",
   },
   otpNumber: {
     fontSize: 18,
-    fontFamily: Fonts["medium"],
     color: "#EE0F38",
     textAlign: "center",
   },
@@ -385,6 +377,5 @@ const styles = StyleSheet.create({
   resendLink: {
     fontSize: 14,
     color: "#EE0F38",
-    fontFamily: Fonts["medium"],
   },
 });

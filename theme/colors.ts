@@ -20,6 +20,7 @@ export const colors = {
     transparent: "rgba(0,0,0,0.0)",
 
     black: {
+        0: "rgba(0,0,0,0)",
         1: "rgba(0,0,0,0.1)",
         2: "rgba(0,0,0,0.2)",
         3: "rgba(0,0,0,0.3)",
@@ -34,6 +35,7 @@ export const colors = {
     },
 
     white: {
+        0: "rgba(255,255,255,0.0)",
         1: "rgba(255,255,255,0.1)",
         2: "rgba(255,255,255,0.2)",
         3: "rgba(255,255,255,0.3)",
@@ -103,13 +105,27 @@ export const colors = {
         hex: {} as { [key: number]: string },
     },
 
-    primary: "rgba(238,15,56,1)",
+    primary: {
+        1: "rgba(238,15,56,0.1)",
+        2: "rgba(238,15,56,0.2)",
+        3: "rgba(238,15,56,0.3)",
+        4: "rgba(238,15,56,0.4)",
+        5: "rgba(238,15,56,0.5)",
+        6: "rgba(238,15,56,0.6)",
+        7: "rgba(238,15,56,0.7)",
+        8: "rgba(238,15,56,0.8)",
+        9: "rgba(238,15,56,0.9)",
+        10: "rgba(238,15,56,1)",
+        hex: {} as { [key: number]: string },
+    },
     secondary: "rgba(245,166,35,1)",
     background: "rgba(255,255,255,1)",
     text: "rgba(51,51,51,1)",
+    forceground: "#f6f6f6",
 };
 
 colors.black.hex = makeHexShadesNoAlpha(colors.black);
+colors.primary.hex = makeHexShadesNoAlpha(colors.primary);
 colors.white.hex = makeHexShadesNoAlpha(colors.white);
 colors.blue.hex = makeHexShadesNoAlpha(colors.blue);
 colors.red.hex = makeHexShadesNoAlpha(colors.red);

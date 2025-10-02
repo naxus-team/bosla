@@ -1,60 +1,38 @@
 import "./global.css";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import BootSplash from "react-native-bootsplash";
-import { Navigate } from "react-router-native";
-
-import { StatusBar, I18nManager, Alert, View, LogBox } from "react-native";
+import { StatusBar } from "react-native";
 import { NativeRouter, useRoutes } from "react-router-native";
-import RNRestart from "react-native-restart";
 import { ToastProvider } from "./providers/ToastProvider";
-
-import { loadLang, getLang, setLang } from "./locales";
-import { getTheme, setTheme, initTheme, ThemeType } from "./theme";
+import { LogProvider } from "./components/contexts/LogContext";
+import { LanguageProvider } from "./locales";
 import routes from "./components/Router";
-import { setVibration } from "./components/hook/vibrations";
+import { initDefaultSettings } from "./components/hook/defaults";
+import { SettingsProvider } from "./components/contexts/SettingsContext";
 import { createNotificationChannel, setNotificationsEnabled } from "./components/hook/notifications";
 import notifee, { EventType } from '@notifee/react-native';
-import { useNavigation } from '@react-navigation/native';
 
 
 function AppRoutes() {
   const element = useRoutes(routes);
   return (
-    <SafeAreaProvider>
-      <SafeAreaView style={{ flex: 1, backgroundColor: "#f5f5f5", flexDirection: "row", direction: "rtl" }}>
-        <ToastProvider>
-          {element}
-        </ToastProvider>
-      </SafeAreaView>
-    </SafeAreaProvider>
+    <LogProvider>
+      <LanguageProvider>
+        <SettingsProvider>
+          <SafeAreaProvider>
+            <SafeAreaView style={{ flex: 1, backgroundColor: "#f6f6f6", flexDirection: "row" }}>
+              <ToastProvider>
+                {element}
+              </ToastProvider>
+            </SafeAreaView>
+          </SafeAreaProvider>
+        </SettingsProvider>
+      </LanguageProvider>
+    </LogProvider>
   );
 }
-
 export default function App() {
-  const [isReady, setIsReady] = useState(false);
-  const [theme, setThemeState] = useState<ThemeType>("light");
-
-  useEffect(() => {
-    // Load Language
-    loadLang();
-    const lang = getLang();
-    const shouldBeRTL = ["ar_gl"].includes(lang);
-
-    if (lang === "ar_gl") {
-      I18nManager.allowRTL(true);
-      I18nManager.forceRTL(true);
-    } else {
-      I18nManager.allowRTL(false);
-      I18nManager.forceRTL(false);
-    }
-
-    // Default Language
-    setLang("ar_gl");
-
-    setIsReady(true);
-  }, []);
-
   useEffect(() => {
     const init = async () => {
       await notifee.deleteChannel('default');
@@ -69,21 +47,17 @@ export default function App() {
       });
       await createNotificationChannel();
       await setNotificationsEnabled(true);
-      await setVibration(true);
+      await initDefaultSettings();
       console.log('Notification permission:', permission);
       BootSplash.hide({ fade: true });
     };
-
     init();
-
   }, []);
-
   return (
     <NativeRouter>
       <StatusBar
         barStyle="dark-content"
-        backgroundColor="transparent"
-      />
+        backgroundColor="transparent" />
       <AppRoutes />
     </NativeRouter>
   );
