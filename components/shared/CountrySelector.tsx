@@ -1,0 +1,85 @@
+import React, { useState, useRef } from "react";
+import { View, Text, FlatList, Pressable, ActivityIndicator, NativeSyntheticEvent, NativeScrollEvent, Animated } from "react-native";
+import CountryFlag from "../utils/countryFlag";
+import { useLanguage } from "../../locales";
+
+import { useCountries } from "../../providers/CountriesProvider";
+export type CountryData = {
+    code: string;
+    flagCode: string;
+    name: string;
+    dial: string;
+};
+type Props = {
+    onSelect: (code: string, name: string, dial: string) => void;
+    onScrollProgress?: (progress: number) => void;
+};
+
+export default function CountrySelector({ onSelect, onScrollProgress }: Props) {
+    Animated
+    const { lang, t } = useLanguage();
+    const { countries, loading, currentCountry } = useCountries();
+    const shadowAnim = useRef(new Animated.Value(0)).current;
+
+
+    const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+        const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
+
+        const scrollY = contentOffset.y;
+        const totalHeight = contentSize.height - layoutMeasurement.height;
+
+        if (totalHeight > 0 && onScrollProgress) {
+            const progress = scrollY / totalHeight;
+            onScrollProgress(progress);
+        }
+
+        const offsetY = event.nativeEvent.contentOffset.y;
+
+        Animated.timing(shadowAnim, {
+            toValue: offsetY > 1 ? 1 : 0,
+            duration: 50,
+            useNativeDriver: false,
+        }).start();
+    };
+
+    const shadowHeight = shadowAnim.interpolate({
+        inputRange: [0, 1],
+        outputRange: [0, 4],
+    });
+
+    return (
+        <>
+            <FlatList<CountryData>
+                data={countries}
+                style={{ padding: 8 }}
+                onScroll={handleScroll}
+                scrollEventThrottle={16}
+                initialNumToRender={5}
+                maxToRenderPerBatch={5}
+                removeClippedSubviews={true}
+                showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
+                decelerationRate="normal"
+                overScrollMode="never"
+                getItemLayout={(_, index) => ({
+                    length: 90,
+                    offset: 90 * index,
+                    index,
+                })}
+                keyExtractor={(item) => item.code}
+                renderItem={({ item }) => (
+                    <Pressable
+                        onPress={() => onSelect(item.code, item.name, item.dial ?? "eg")}
+                        className="flex-row items-center justify-between h-[58px] px-4"
+                    >
+                        <View className="flex-row items-center gap-4">
+                            <CountryFlag code={item.flagCode.toUpperCase() || ""} size={20} />
+                            <Text style={{ fontFamily: lang.startsWith("ar") ? "NotoSansArabic-SemiBold" : "NotoSans-SemiBold" }} className="text-lg text-black">{item.name}</Text>
+                        </View>
+                        <Text style={{ fontFamily: lang.startsWith("ar") ? "NotoSansArabic-Regular" : "NotoSans-Regular" }} className="text-lg text-black/60">+{item.dial ?? "1"}</Text>
+                    </Pressable>
+                )}
+            />
+        </>
+    );
+}

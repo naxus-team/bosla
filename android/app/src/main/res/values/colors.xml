@@ -1,0 +1,14 @@
+<resources>
+    <!-- ألوان أساسية -->
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#03DAC5</color>
+
+    <!-- ألوان للسبلاتش -->
+    <color name="splash_background">#FFFFFF</color>
+
+    <!-- ألوان شائعة -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="transparent">#00000000</color>
+</resources>
