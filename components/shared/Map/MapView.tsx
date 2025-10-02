@@ -4,7 +4,7 @@ import MapboxGL from "@rnmapbox/maps";
 import NetInfo from "@react-native-community/netinfo";
 
 MapboxGL.setAccessToken(
-    "pk.eyJ1IjoibmF4dXMiLCJhIjoiY21mOGRsOWpsMTBxMTJpcXMyOGZrYnhlNSJ9.jqc2quB65_hVUxEHlv0lzA"
+    "pk."
 );
 
 const bounds: [[number, number], [number, number]] = [
