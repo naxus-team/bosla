@@ -27,6 +27,7 @@ DerivedData
 build/
 .idea
 .gradle
+gradle.properties
 local.properties
 *.iml
 *.hprof
@@ -40,6 +41,9 @@ local.properties
 node_modules/
 npm-debug.log
 yarn-error.log
+
+components/shared/Map/
+MapView.tsx
 
 # fastlane
 #
