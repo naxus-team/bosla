@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:background="#EEEEEE">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Naxus Holding Company Inc."
+        android:textSize="20sp"
+        android:textColor="#000" />
+
+    <!-- الزرار الجديد -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/myButton"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:text="Click Me"
+        android:textColor="#FFFFFF"
+        android:textAllCaps="false"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="@android:color/transparent"
+        android:stateListAnimator="@null"
+        app:cornerRadius="25dp"
+        app:rippleColor="#000"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:iconTint="@null"/>
+
+
+
+</LinearLayout>
