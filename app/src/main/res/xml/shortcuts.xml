@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <shortcut
+        android:shortcutId="open_map"
+        android:enabled="true"
+        android:icon="@drawable/bubble_search"
+        android:shortcutShortLabel="@string/shortcut_open_map"
+        android:shortcutLongLabel="@string/shortcut_open_map_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.naxus.bosla"
+            android:targetClass="com.naxus.bosla.MapActivity"/>
+    </shortcut>
+
+    <shortcut
+        android:shortcutId="open_debug"
+        android:enabled="true"
+        android:icon="@drawable/bubble_search"
+        android:shortcutShortLabel="@string/shortcut_debug"
+        android:shortcutLongLabel="@string/shortcut_debug_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.naxus.bosla"
+            android:targetClass="com.naxus.bosla.LauncherActivity"/>
+    </shortcut>
+
+</shortcuts>

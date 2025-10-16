@@ -3,15 +3,27 @@ plugins {
 }
 
 android {
-    namespace "com.naxus.nclab"
-    compileSdk 34
+    namespace "com.naxus.bosla"
+    compileSdk 36
 
     defaultConfig {
-        applicationId "com.naxus.nclab"
+        applicationId "com.naxus.bosla"
         minSdk 26
+        //noinspection OldTargetApi
         targetSdk 34
-        versionCode 1
-        versionName "1.0"
+        // Major / Minor / Patch
+        def major = 1
+        def minor = 1
+        def patch = 0
+
+        // Build number تلقائي من Git commit count
+        def gitCommitCount = 'git rev-list --count HEAD'.execute([], project.rootDir).text.trim().toInteger()
+
+        // versionCode = Major * 10000 + Minor * 100 + BuildNumber
+        versionCode major * 10000 + minor * 100 + gitCommitCount
+
+        // versionName = Major.Minor.Patch.BuildNumber
+        versionName "${major}.${minor}.${patch}.${gitCommitCount}"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -34,11 +46,14 @@ android {
 
 dependencies {
     implementation project(':NCLib')
+    implementation 'com.mapbox.maps:android:11.15.3' // الـ core SDK
+
+
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'com.google.android.material:material:1.12.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.google.android.material:material:1.10.0'
-
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.19.1'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'

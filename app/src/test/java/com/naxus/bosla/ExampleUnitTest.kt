@@ -1,4 +1,4 @@
-package com.naxus.nclab
+package com.naxus.bosla
 
 import org.junit.Test
 

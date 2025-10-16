@@ -16,9 +16,10 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://api.mapbox.com/downloads/v2/releases/maven' }
     }
 }
 
-rootProject.name = "NLab"
+rootProject.name = "Bosla"
 include ':app', ':NCLib'
 include ':NCLib'

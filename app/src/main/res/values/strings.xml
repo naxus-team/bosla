@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">NLab</string>
+    <string name="app_name" translatable="false">Bosla</string>
+    <string name="shortcut_open_map">Open Map</string>
+    <string name="shortcut_open_map_long">Open Map Activity</string>
+    <string name="shortcut_debug">Debug Menu</string>
+    <string name="shortcut_debug_long">Open Debug Panel</string>
 </resources>
