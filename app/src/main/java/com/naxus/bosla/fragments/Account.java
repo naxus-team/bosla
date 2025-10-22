@@ -141,14 +141,9 @@ public class Account extends Fragment {
 
             buttonsContainer.addView(btn);
         }
-
-
         header.addView(title);
         header.addView(buttonsContainer);
-
         root.addView(header);
-
-        // RecyclerView برمجيًا
         RecyclerView recyclerView = new RecyclerView(getContext());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setLayoutParams(new LinearLayout.LayoutParams(
@@ -220,7 +215,6 @@ public class Account extends Fragment {
             @Override
             public void onHeaderClick() {
                 Toast.makeText(getContext(), "Header clicked!", Toast.LENGTH_SHORT).show();
-                // افتح صفحة البروفايل مثلاً
             }
         });
 
@@ -236,16 +230,12 @@ public class Account extends Fragment {
                 totalScroll += dy;
                 if (totalScroll < 0) totalScroll = 0;
 
-                // احسب النسبة من 0 إلى 1 حسب مقدار التمرير
                 float ratio = Math.min(1f, totalScroll / scrollFactor);
 
-                // احسب الارتفاع بناءً على النسبة
                 float targetElevation = ratio * maxElevation;
 
-                // تطبيق فوري بدون تأخير
                 header.setTranslationZ(targetElevation);
 
-                // اختياري: الخلفية ثابتة
                 header.setBackgroundColor(Color.WHITE);
             }
         });

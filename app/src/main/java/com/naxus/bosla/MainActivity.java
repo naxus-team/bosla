@@ -72,13 +72,10 @@ public class MainActivity extends AppCompatActivity {
             mainContent.setOnApplyWindowInsetsListener((v, insets) -> {
                 DisplayCutout cutout = insets.getDisplayCutout();
                 if (cutout != null) {
-                    // المسافة من كل طرف
                     int left = cutout.getSafeInsetLeft();
                     int top = cutout.getSafeInsetTop();
                     int right = cutout.getSafeInsetRight();
                     int bottom = cutout.getSafeInsetBottom();
-
-                    // تعيين padding أو margin للـ SlideLayout حسب الزوايا
                     slideLayout.setPadding(left, top, right, bottom);
                 }
                 return insets.consumeSystemWindowInsets();
@@ -90,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
             slideLayout.setOutlineProvider(new ViewOutlineProvider() {
                 @Override
                 public void getOutline(View view, Outline outline) {
-                    int radius = 48; // أو احسبه من cutout لو عايز مطابق
+                    int radius = 48;
                     outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), radius);
                 }
             });
@@ -102,8 +99,8 @@ public class MainActivity extends AppCompatActivity {
                 FrameLayout.LayoutParams.MATCH_PARENT
         ));
         overlay.setBackgroundColor(Color.BLACK);
-        overlay.setAlpha(0f); // البداية شفاف
-        overlay.setClickable(false); // يمنع تفاعل المستخدم مع الـ overlay نفسه
+        overlay.setAlpha(0f);
+        overlay.setClickable(false);
         overlay.setFocusable(false);
 
         addContentView(slideLayout, new FrameLayout.LayoutParams(
@@ -154,12 +151,12 @@ public class MainActivity extends AppCompatActivity {
         ));
 
         GradientDrawable bg = new GradientDrawable();
-        bg.setColor(NColor.forceground.get(10)); // نفس لون الخلفية
+        bg.setColor(NColor.forceground.get(10));
         float radius = TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
         bg.setCornerRadius(radius);
 
-        container.setClipToOutline(true); // يمنع العناصر من الخروج عن الخلفية
+        container.setClipToOutline(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             container.setOutlineProvider(new ViewOutlineProvider() {
                 @Override

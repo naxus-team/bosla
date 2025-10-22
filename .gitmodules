@@ -1,0 +1,3 @@
+[submodule "NCLib"]
+	path = NCLib
+	url = https://github.com/naxus-team/NCLib.git
