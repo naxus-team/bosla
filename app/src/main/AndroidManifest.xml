@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -9,6 +11,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
 
     <application
         android:allowBackup="true"
@@ -16,8 +19,9 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:layoutDirection="locale"
         android:theme="@style/Theme.Bosla">
-        <meta-data
+    <meta-data
             android:name="com.mapbox.maps.token"
             android:value="pk.eyJ1IjoibmF4dXMiLCJhIjoiY21mOGRsOWpsMTBxMTJpcXMyOGZrYnhlNSJ9.jqc2quB65_hVUxEHlv0lzA" />
         <service
@@ -39,7 +43,7 @@
             android:name=".LauncherActivity"
             android:exported="true"
             android:label="Bosla"
-            android:theme="@style/Theme.Bosla">
+            android:theme="@style/Theme.Bosla.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -51,6 +55,8 @@
         <activity android:name=".OTPLoginActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".MapActivity" />
+        <activity android:name=".LauncherActivity$QRScannerActivity" />
+        <activity android:name=".SlideActivity"/>
     </application>
 
 </manifest>

@@ -1,241 +1,235 @@
 package com.naxus.bosla;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
+import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.Outline;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.RippleDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.TypedValue;
+import android.view.DisplayCutout;
 import android.view.Gravity;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.ScaleAnimation;
+import android.view.ViewGroup;
+import android.view.ViewOutlineProvider;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
-import android.content.Context;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.dynamicanimation.animation.DynamicAnimation;
-import androidx.dynamicanimation.animation.SpringAnimation;
-import androidx.dynamicanimation.animation.SpringForce;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.naxus.bosla.layouts.LanguageLayout;
+import com.naxus.bosla.ui.BottomNavigation;
+import com.naxus.bosla.utils.helpers.LayoutDirectionHelper;
+import com.naxus.bosla.utils.helpers.ScreenUtils;
+import com.naxus.bosla.utils.helpers.StatusBarHelper;
+import com.naxus.core.ui.NSheet;
 import com.naxus.core.utils.NColor;
+import com.naxus.core.utils.NLang;
 
 public class MainActivity extends AppCompatActivity {
+    private View mainContent;
+    private View overlay;
+    private NSheet sheet;
+    private FrameLayout slideLayout;
 
-    private int selectedIndex = 0;
-    private LinearLayout bottomNav;
-
-    String[] tabs = {"Home", "الإعدادات"};
-    int[] icons = {R.drawable.layout_grid_stack_down_stroke, R.drawable.user_circle_stroke};
-    int[] icons_active = {R.drawable.layout_grid_stack_down, R.drawable.user_circle};
+    private BottomNavigation bottomNavigation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // الجذر الرئيسي
-        LinearLayout root = new LinearLayout(this);
-        root.setOrientation(LinearLayout.VERTICAL);
-        root.setBackgroundColor(Color.WHITE);
-        root.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT));
-
-        // محتوى الصفحة
-        LinearLayout content = new LinearLayout(this);
-        content.setOrientation(LinearLayout.VERTICAL);
-        content.setGravity(Gravity.CENTER);
-        content.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, 0, 1));
-
-        TextView label = new TextView(this);
-        label.setText("Home Page");
-        label.setTextSize(24);
-        label.setTextColor(Color.BLACK);
-        content.addView(label);
-        root.addView(content);
-
-        // الـ Bottom Nav
-        int bottomHeight = (int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, 80,
-                getResources().getDisplayMetrics());
-
-        bottomNav = new LinearLayout(this);
-        bottomNav.setOrientation(LinearLayout.HORIZONTAL);
-        bottomNav.setGravity(Gravity.CENTER);
-        bottomNav.setBackgroundColor(Color.parseColor("#FFFFFF"));
-        bottomNav.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                bottomHeight));
-
-        // خط علوي (Border)
-        View topBorder = new View(this);
-        topBorder.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, 2));
-        topBorder.setBackgroundColor(NColor.black.get(1));
-        root.addView(topBorder);
-
-        createBottomNavItems(content, label);
-        root.addView(bottomNav);
-
-        setContentView(root);
-    }
-
-    private void createBottomNavItems(LinearLayout content, TextView label) {
-        LinearLayout.LayoutParams itemParams = new LinearLayout.LayoutParams(0,
-                LinearLayout.LayoutParams.WRAP_CONTENT, 1);
-
-        for (int i = 0; i < tabs.length; i++) {
-            LinearLayout item = new LinearLayout(this);
-            item.setOrientation(LinearLayout.VERTICAL);
-            item.setGravity(Gravity.CENTER_HORIZONTAL);
-            item.setGravity(Gravity.CENTER);
-            item.setLayoutParams(itemParams);
-            item.setPadding(0, 12, 0, 0);
-            int index = i;
-
-            int width = (int) TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP, 68, getResources().getDisplayMetrics());
-
-            int height = (int) TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP, 32, getResources().getDisplayMetrics());
-
-            FrameLayout iconContainer = new FrameLayout(this);
-            FrameLayout.LayoutParams iconLayoutParams = new FrameLayout.LayoutParams(
-                    width, height, Gravity.CENTER);
-            iconContainer.setLayoutParams(iconLayoutParams);
+        NLang.init(this);
+        StatusBarHelper.setStatusBar(getWindow(), true, Color.TRANSPARENT);
+        StatusBarHelper.setLightNavigationBar(this, Color.TRANSPARENT);
+        setLayoutDirection();
 
 
-            GradientDrawable bg = new GradientDrawable();
-            float radius = TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP, 32, getResources().getDisplayMetrics());
-            bg.setCornerRadius(radius);
-            bg.setColor(i == selectedIndex ? NColor.forceground.get(10) : Color.TRANSPARENT);
-            iconContainer.setBackground(bg);
+        sheet = new NSheet(this);
+        setContentView(sheet.getRoot());
+        bottomNavigation = new BottomNavigation(this);
+        sheet.getMainContent().addView(bottomNavigation.getRoot());
+        sheet.bringToFront();
 
-            // الأيقونة
-            ImageView icon = new ImageView(this);
-            icon.setImageResource(i == selectedIndex ? icons_active[i] : icons[i]);
-            icon.setColorFilter(i == selectedIndex ? NColor.black.get(10) : NColor.black.get(5));
+        mainContent = bottomNavigation.getRoot();
+        slideLayout = new FrameLayout(this);
+        slideLayout.setId(View.generateViewId());
+        slideLayout.setTranslationX(getResources().getDisplayMetrics().widthPixels);
+        slideLayout.setBackgroundColor(Color.WHITE);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT
+        );
+        slideLayout.setLayoutParams(params);
 
-            int size = (int) TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics());
-            FrameLayout.LayoutParams iconParams = new FrameLayout.LayoutParams(size, size);
-            iconParams.gravity = Gravity.CENTER;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            mainContent.setOnApplyWindowInsetsListener((v, insets) -> {
+                DisplayCutout cutout = insets.getDisplayCutout();
+                if (cutout != null) {
+                    // المسافة من كل طرف
+                    int left = cutout.getSafeInsetLeft();
+                    int top = cutout.getSafeInsetTop();
+                    int right = cutout.getSafeInsetRight();
+                    int bottom = cutout.getSafeInsetBottom();
 
-            icon.setLayoutParams(iconParams);
-
-            // النص
-            TextView text = new TextView(this);
-            text.setText(tabs[i]);
-            text.setTextColor(Color.BLACK);
-            text.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-            text.setGravity(Gravity.CENTER);
-
-            LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT);
-            textParams.topMargin = (int) TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP, 4, getResources().getDisplayMetrics());
-            text.setLayoutParams(textParams);
-
-            iconContainer.addView(icon);
-            item.addView(iconContainer);
-            item.addView(text);
-
-            // الضغط
-            item.setOnClickListener(v -> {
-                selectTab(index);
-                label.setText(tabs[index] + " Page");
+                    // تعيين padding أو margin للـ SlideLayout حسب الزوايا
+                    slideLayout.setPadding(left, top, right, bottom);
+                }
+                return insets.consumeSystemWindowInsets();
             });
-
-            bottomNav.addView(item);
-        }
-    }
-
-    private void animateFontWeight(TextView textView, boolean toBold) {
-        ValueAnimator animator = ValueAnimator.ofFloat(toBold ? 0f : 1f, toBold ? 1f : 0f);
-        animator.setDuration(150);
-        animator.addUpdateListener(animation -> {
-            float value = (float) animation.getAnimatedValue();
-            textView.setTextScaleX(1f + (value * 0.02f)); // تمد بسيط جدًا أفقي يحاكي ثقل الخط
-            textView.setAlpha(0.8f + (value * 0.2f)); // يحاكي وضوح الحروف في الوزن الأثقل
-        });
-        animator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                textView.setTypeface(null, toBold ? Typeface.BOLD : Typeface.NORMAL);
-                textView.setTextScaleX(1f);
-                textView.setAlpha(1f);
-            }
-        });
-        animator.start();
-    }
-
-    private void selectTab(int index) {
-        if (index == selectedIndex) return;
-
-        // ✅ اهتزاز بسيط
-        Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        if (vibrator != null && vibrator.hasVibrator()) {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                vibrator.vibrate(VibrationEffect.createOneShot(40, VibrationEffect.DEFAULT_AMPLITUDE));
-            } else {
-                vibrator.vibrate(40);
-            }
         }
 
-        // العناصر القديمة والجديدة
-        LinearLayout oldItem = (LinearLayout) bottomNav.getChildAt(selectedIndex);
-        LinearLayout newItem = (LinearLayout) bottomNav.getChildAt(index);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            slideLayout.setClipToOutline(true);
+            slideLayout.setOutlineProvider(new ViewOutlineProvider() {
+                @Override
+                public void getOutline(View view, Outline outline) {
+                    int radius = 48; // أو احسبه من cutout لو عايز مطابق
+                    outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), radius);
+                }
+            });
+        }
 
-        ImageView oldIcon = (ImageView) oldItem.getChildAt(0);
-        TextView oldText = (TextView) oldItem.getChildAt(1);
-        ImageView newIcon = (ImageView) newItem.getChildAt(0);
-        TextView newText = (TextView) newItem.getChildAt(1);
+        overlay = new View(this);
+        overlay.setLayoutParams(new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT
+        ));
+        overlay.setBackgroundColor(Color.BLACK);
+        overlay.setAlpha(0f); // البداية شفاف
+        overlay.setClickable(false); // يمنع تفاعل المستخدم مع الـ overlay نفسه
+        overlay.setFocusable(false);
 
-        // 🎨 تحديث الحالة
-        oldIcon.setImageResource(icons[selectedIndex]);
-        oldIcon.setColorFilter(NColor.black.get(10));
-        oldText.setTextColor(NColor.black.get(10));
-        oldText.setTypeface(null, Typeface.NORMAL);
-
-        newIcon.setImageResource(icons_active[index]);
-        newIcon.setColorFilter(NColor.primary.get(8));
-        newText.setTypeface(null, Typeface.BOLD);
-
-        // ✅ Spring Animation للأيقونة (Scale)
-        SpringAnimation scaleX = new SpringAnimation(newIcon, DynamicAnimation.SCALE_X, 1f);
-        SpringAnimation scaleY = new SpringAnimation(newIcon, DynamicAnimation.SCALE_Y, 1f);
-        SpringForce spring = new SpringForce(1f);
-        spring.setDampingRatio(SpringForce.DAMPING_RATIO_MEDIUM_BOUNCY); // ← مقدار الارتداد
-        spring.setStiffness(SpringForce.STIFFNESS_LOW); // ← مرونة أقل = حركة أهدأ
-
-        scaleX.setSpring(spring);
-        scaleY.setSpring(spring);
-
-        // نبدأ من تكبير بسيط
-        newIcon.setScaleX(1.1f);
-        newIcon.setScaleY(1.1f);
-        scaleX.start();
-        scaleY.start();
-
-        animateFontWeight(newText, true);
-        animateFontWeight(oldText, false);
-
-        selectedIndex = index;
+        addContentView(slideLayout, new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT
+        ));
     }
 
+    private void setLayoutDirection() {
+        getWindow().getDecorView().setLayoutDirection(isRTL()
+                ? View.LAYOUT_DIRECTION_RTL
+                : View.LAYOUT_DIRECTION_LTR);
+    }
+
+    public boolean isRTL() {
+        String lang = NLang.getCurrentLanguage(this);
+        return lang != null && (lang.startsWith("ar") || lang.startsWith("fa") || lang.startsWith("ur"));
+    }
+
+    public void showSettingsSheet() {
+        LinearLayout sheetContent = sheet.getBottomSheet();
+        sheetContent.removeAllViews();
+        View handle = new View(this);
+        int handleWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, this.getResources().getDisplayMetrics());
+        int handleHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, this.getResources().getDisplayMetrics());
+        LinearLayout.LayoutParams handleParams = new LinearLayout.LayoutParams(handleWidth, handleHeight);
+        handleParams.setMargins(0, 8, 0, 16);
+        handleParams.gravity = Gravity.CENTER_HORIZONTAL;
+        handle.setLayoutParams(handleParams);
+        handle.setBackgroundColor(NColor.forceground.get(10));
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            handle.setClipToOutline(true);
+            handle.setOutlineProvider(new ViewOutlineProvider() {
+                @Override
+                public void getOutline(View view, Outline outline) {
+                    outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), 16f);
+                }
+            });
+        }
+        sheetContent.addView(handle, 0);
+
+        LinearLayout container = new LinearLayout(this);
+        container.setOrientation(LinearLayout.HORIZONTAL);
+        container.setGravity(Gravity.CENTER_VERTICAL);
+        container.setLayoutParams(new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        ));
+
+        GradientDrawable bg = new GradientDrawable();
+        bg.setColor(NColor.forceground.get(10)); // نفس لون الخلفية
+        float radius = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
+        bg.setCornerRadius(radius);
+
+        container.setClipToOutline(true); // يمنع العناصر من الخروج عن الخلفية
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            container.setOutlineProvider(new ViewOutlineProvider() {
+                @Override
+                public void getOutline(View view, Outline outline) {
+                    outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), radius);
+                }
+            });
+        }
+        container.setBackground(bg);
+
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.HORIZONTAL);
+        layout.setGravity(Gravity.CENTER_VERTICAL);
+        layout.setPadding(0, 48, 0, 48);
+        layout.setLayoutParams(new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        ));
+
+        ImageView icon = new ImageView(this);
+        LinearLayout.LayoutParams iconParams = new LinearLayout.LayoutParams(64, 64);
+        iconParams.setMargins(88, 0, 88, 0);
+        icon.setLayoutParams(iconParams);
+        icon.setImageTintList(ColorStateList.valueOf(NColor.black.get(5)));
+        icon.setImageResource(R.drawable.arrow_start_on_rectangle);
+        layout.addView(icon);
+
+        LinearLayout textsLayout = new LinearLayout(this);
+        textsLayout.setOrientation(LinearLayout.VERTICAL);
+        textsLayout.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+
+        TextView title = new TextView(this);
+        title.setTextSize(16f);
+        title.setTextColor(Color.BLACK);
+        title.setText(NLang.t("account.logout"));
+        textsLayout.addView(title);
+        layout.addView(textsLayout);
+
+        container.addView(layout);
+
+        layout.setOnClickListener(v -> {
+            Toast.makeText(this, "Header clicked!", Toast.LENGTH_SHORT).show();
+        });
+
+        sheetContent.addView(container);
+        layout.setBackgroundResource(selectableItemBackground(this));
+
+        sheet.getBehavior().setState(BottomSheetBehavior.STATE_EXPANDED);
+    }
+
+    private int selectableItemBackground(Context context) {
+        TypedValue outValue = new TypedValue();
+        context.getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
+        return outValue.resourceId;
+    }
+
+
+    @Override
+    public void setContentView(int layoutResID) {
+        super.setContentView(layoutResID);
+        LayoutDirectionHelper.forceLayoutDirection(getWindow().getDecorView(), isRTL());
+    }
+
+    @Override
+    public void setContentView(View view) {
+        super.setContentView(view);
+        LayoutDirectionHelper.forceLayoutDirection(getWindow().getDecorView(), isRTL());
+    }
+
+    public BottomSheetBehavior<?> getSheetBehavior() {
+        return sheet != null ? sheet.getBehavior() : null;
+    }
 }
