@@ -23,7 +23,7 @@
         android:theme="@style/Theme.Bosla">
     <meta-data
             android:name="com.mapbox.maps.token"
-            android:value="pk.eyJ1IjoibmF4dXMiLCJhIjoiY21mOGRsOWpsMTBxMTJpcXMyOGZrYnhlNSJ9.jqc2quB65_hVUxEHlv0lzA" />
+            android:value="pk." />
         <service
             android:name=".utils.Forceground"
             android:enabled="true"
